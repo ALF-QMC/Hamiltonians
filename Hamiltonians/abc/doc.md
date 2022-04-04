@@ -17,3 +17,11 @@ The model is defined in Eq. {eq}`eq:ham_abc`
 ## Observables
 
 Lorem ipsum ...
+
+## Some FORTRAN code
+
+```fortran
+do i=1, 10
+  a(i) = b(i) + c(i)
+enddo
+```
