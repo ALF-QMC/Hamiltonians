@@ -1,11 +1,13 @@
 # Hamiltonians
 
-Repository for Hamiltonians that are not part of the ALF repository with automatically generated [website](http://gitpages.physik.uni-wuerzburg.de/alf/hamiltonians).
+Repository for Hamiltonians that are not part of the ALF repository, with automatically generated [website](http://gitpages.physik.uni-wuerzburg.de/alf/hamiltonians).
 
 The website is generated using [Jupyert Book](https://jupyterbook.org/), with one documentation file per Hamiltonian. The documentation can be written in different flavors of Markdown (`doc.md`), as Jupyter notebook (`doc.ipynb`), or reStructuredText (`doc.rst`).
 
 
 ## Diretory structure
+
+One directory per Hamiltonian:
 
 ```
 Hamiltonians/
