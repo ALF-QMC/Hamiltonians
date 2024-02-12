@@ -1,9 +1,0 @@
-# Template for table of contents
-# The list of Hamiltonians will be updated by create_toc.py
-# Learn more at https://jupyterbook.org/customize/toc.html
-
-format: jb-book
-root: front.md
-chapters:
-- file: ./Hamiltonians/abc/doc.md
-- file: ./Hamiltonians/def/doc.md

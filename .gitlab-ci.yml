@@ -1,7 +1,6 @@
 pages:
   image: git.physik.uni-wuerzburg.de:25812/jonas_schwab/test-containers/jupyter-pyalf-doc
   script:
-    - ./create_toc.py
     - jb build .
     - mkdir public
     - mv _build/html/* public

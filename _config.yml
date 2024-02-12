@@ -11,8 +11,8 @@ execute:
   execute_notebooks: 'off'
 
 # Add a bibtex file so that we can create citations
-# bibtex_bibfiles:
-#   - 'references.bib'
+bibtex_bibfiles:
+  - 'bibfile.bib'
 
 # Information about where the book exists on the web
 repository:
@@ -24,7 +24,7 @@ repository:
 # See https://jupyterbook.org/customize/config.html#add-a-link-to-your-repository
 html:
   favicon: "images/alf_logo2-old.png"
-  use_issues_button: true
+  # use_issues_button: true
   use_repository_button: true
 
 parse:
@@ -37,3 +37,15 @@ parse:
     - tasklist
     # enable \begin{align} etc.
     - amsmath
+
+sphinx:
+  recursive_update: true
+  config:
+    html_theme_options:
+      repository_provider: https://git.physik.uni-wuerzburg.de
+    html_context:
+      gitlab_url: https://git.physik.uni-wuerzburg.de/ALF
+      gitlab_repo: hamiltonians
+      gitlab_user: ""
+      # gitlab_version: main
+      # doc_path: source
