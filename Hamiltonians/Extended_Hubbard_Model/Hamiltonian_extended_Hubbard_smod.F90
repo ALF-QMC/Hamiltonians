@@ -252,7 +252,7 @@
              N_FL  = 1
           endif
           If  (( Abs(Ham_SV)-1.d0 )  >  1.0D-8 ) then
-            Write(error_unit,*) 'Ham_Set: Ham_V has to  take the values  +/- 1 '
+            Write(error_unit,*) 'Ham_Set: Ham_sV has to  take the values  +/- 1 '
             CALL Terminate_on_error(ERROR_HAMILTONIAN,__FILE__,__LINE__)
           endif   
 
@@ -312,6 +312,7 @@
              Write(unit_info,*) 'N_FL          : ', N_FL
              Write(unit_info,*) 't             : ', Ham_T
              Write(unit_info,*) 'Ham_U         : ', Ham_U
+             Write(unit_info,*) 'Ham_sV        : ', Ham_sV
              Write(unit_info,*) 'Ham_V1        : ', Ham_V1
              if (Index(str_to_upper(Lattice_type),'BILAYER') > 0 )  then
                Write(unit_info,*) 't2            : ', Ham_T2
@@ -556,7 +557,6 @@
                 Call Op_make(Op_V(nc,nf),2)
              enddo
              nc = N_hubbard
-             Write(*,*) Bond_Matrix(1)%N_FAM,Bond_Matrix(1)%L_Fam(1) 
              Do n_f = 1, Bond_Matrix(1)%N_FAM
                 Do l_f = 1, Bond_Matrix(1)%L_Fam(n_f)
                    I    = Bond_Matrix(1)%List_Fam(n_f,l_f,1)
