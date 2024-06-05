@@ -38,7 +38,7 @@ ham_name = "extended_Hubbard"
 in the parameters  file.
 
 In this formulation,  there is  some   double counting  } of  the  Hubbard  term.  In particular  expanding  the  square  V-term  gives  the  Hamiltonian:
-## Observables
+
 $$
 \hat{H}  =       \sum_{b=\langle  i,j \rangle } \sum_{\sigma=1}^{N}
     \hat{c}^{\dagger}_{i,\sigma} T^{\sigma}_{i,j}    \hat{c}^{}_{j,\sigma}  +
