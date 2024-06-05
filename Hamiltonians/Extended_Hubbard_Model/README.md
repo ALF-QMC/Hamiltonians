@@ -7,11 +7,12 @@ The model is defined  as
 
 $$
 \hat{H}  =       \sum_{ b =  \left< i,j \right>  } \sum_{\sigma=1}^{N}  \left(
-  \hat{c}^{\dagger}_{i,\sigma} T^{\sigma}_{i,j}    \hat{c}^{\dagger}_{j,\sigma}  +  \text{H.c.} \right)
+  \hat{c}^{\dagger}_{i,\sigma} T^{\sigma}_{i,j}    \hat{c}^{}_{j,\sigma}  +  H.c. \right)
   +  \sum_{ b=\left< i,j \right> }
   \frac{s_V V_{i,j}}{2N} \left( [n_{i} - N/2]  +  s_V [ n_{j}  - N/2 ]  \right)^2   +
   \sum_{i} \frac{U_i}{N} \left( n_i -  \frac{N}{2} \right)^2
 $$
+
 The  implementation supports all  standard ALF lattices and  the  hopping as  well as  the
 interaction $V$  are  restricted to nearest neighbors.    The parameter file  for  this
 specific model reads:
@@ -43,7 +44,7 @@ In this formulation,  there is  some   double counting  } of  the  Hubbard  term
 ## Observables
 $$
 \hat{H}  =       \sum_{b=\langle  i,j \rangle } \sum_{\sigma=1}^{N}
-    \hat{c}^{\dagger}_{i,\sigma} T^{\sigma}_{i,j}    \hat{c}^{\dagger}_{j,\sigma}  +
+    \hat{c}^{\dagger}_{i,\sigma} T^{\sigma}_{i,j}    \hat{c}^{}_{j,\sigma}  +
     \sum_{b=\langle  i,j \rangle }
     \frac{V_{i,j}}{N} \left( [n_{i} - N/2] \right) \left([ n_{j}  - N/2 ]  \right)   +
     \sum_{i}  \frac{U^{eff}_i}{N} \left( n_i -  \frac{N}{2} \right)^2
