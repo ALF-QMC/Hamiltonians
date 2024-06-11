@@ -28,7 +28,7 @@ Ham_Vperp  = 0.d0          ! For bilayer systems
 Ham_SV     = 1.0           ! = +/- 1: Sign convention for interaction
 /
 ```
-In the above Ham_T, Ham_V, Ham_U are the    nearest  neighbor  hopping, nearest  neighbor  interaction  and Hubbard repulsion on the the first layer.   Ham_T2, Ham_V2, Ham_U2   are  the corresponding quantities  on the second layer.  Ham_Tperp, Ham_Vperp   define  the inter-layer couplings.  Finally $ Ham_chem $  is  the chemical potential.
+In the above Ham_T, Ham_V, Ham_U are the    nearest  neighbor  hopping, nearest  neighbor  interaction  and Hubbard repulsion on the the first layer.   Ham_T2, Ham_V2, Ham_U2   are  the corresponding quantities  on the second layer.  Ham_Tperp, Ham_Vperp   define  the inter-layer couplings.  Finally Ham_chem  is  the chemical potential.
 To use  this  Hamiltonian  you  have to specify:
 ```fortran
 &VAR_ham_name
