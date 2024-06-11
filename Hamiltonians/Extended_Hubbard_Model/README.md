@@ -46,10 +46,13 @@ $$
     \frac{V_{i,j}}{N} \left( [n_{i} - N/2] \right) \left([ n_{j}  - N/2 ]  \right)   +
     \sum_{i}  \frac{U^{eff}_i}{N} \left( n_i -  \frac{N}{2} \right)^2
 $$
+
 In the  above
+
 $$
 U^{eff}_{i}    = U_i +  \sum_{b = (n,m)} V_b  \left( \delta_{i,m} +  \delta_{i,n}\right)
 $$
+
 For  the  single  layer  lattices  with uniform $U$ and $V$,  $U^{eff} =   U  + Z V $
 where  Z=4 (Z=3)   for  the square (honeycomb)  lattice.
 
