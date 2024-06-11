@@ -53,13 +53,13 @@ $$
 U^{eff}_{i}    = U_i +  \sum_{b = (n,m)} V_b  \left( \delta_{i,m} +  \delta_{i,n}\right)
 $$
 
-For  the  single  layer  lattices  with uniform $U$ and $V$,  $U^{eff} =   U  + Z V $
+For  the  single  layer  lattices  with uniform $U$ and $V$,  $U^{eff} =   U  + Z V$
 where  Z=4 (Z=3)   for  the square (honeycomb)  lattice.
 
 
 ## Observables 
 The code  has  the standard  observables. Note that  the potential and  total  energies  are   defined  as in the  Hamiltonian.   That is   the file Ener\_scalJ   corresponds to
-  $ \langle \hat{H}   \rangle $  with  $\hat{H}$  defined  as  in the  first  equation
+  $\langle \hat{H}   \rangle$  with  $\hat{H}$  defined  as  in the  first  equation
 
 ## Limitations
 As  it  stands  the  code   only  works for    SU(N)  decoupling of  the  Hubbard  interaction.   
