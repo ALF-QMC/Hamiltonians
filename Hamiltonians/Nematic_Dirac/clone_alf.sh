@@ -1,5 +1,5 @@
-#!/usr/bin/sh
-BRANCH="286-make-hamiltonians-list-more-dynamic"
+#!/bin/sh
+BRANCH="master"
 HAMILTONIAN_NAME="Nematic_Dirac"
 
 git clone https://git.physik.uni-wuerzburg.de/ALF/ALF.git --branch $BRANCH || exit 1

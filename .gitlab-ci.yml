@@ -8,3 +8,27 @@ pages:
   artifacts:
     paths:
       - public
+
+prep_tests:
+  image: git.physik.uni-wuerzburg.de:25812/z03/pdi/debian:bookworm-buildd
+  needs: []
+  tags:
+    - k8s
+  script:
+    - apt-get update && apt-get install -y python3-yaml
+    - ./generate_pipeline.py
+    - cat generated-config.yml
+  artifacts:
+    paths:
+      - generated-config.yml
+    expire_in: 1 day
+
+trigger_tests:
+  needs: [prep_tests]
+  trigger:
+    include:
+      - artifact: generated-config.yml
+        job: prep_tests
+    strategy: depend
+  variables:
+    PARENT_PIPELINE_ID: $CI_PIPELINE_ID

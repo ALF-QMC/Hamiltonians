@@ -3,3 +3,4 @@ _build
 Hamiltonians/*/Hamiltonian_*_read_write_parameters.F90
 
 ALF
+generated-config.yml
