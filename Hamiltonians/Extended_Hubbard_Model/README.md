@@ -37,7 +37,7 @@ ham_name = "extended_Hubbard"
 ```
 in the parameters  file.
 
-In this formulation,  there is  some   double counting  } of  the  Hubbard  term.  In particular  expanding  the  square  V-term  gives  the  Hamiltonian:
+In this formulation,  there is  some   double counting  of  the  Hubbard  term.  In particular  expanding  the  square  V-term  gives  the  Hamiltonian:
 
 $$
 \hat{H}  =       \sum_{b=\langle  i,j \rangle } \sum_{\sigma=1}^{N}
