@@ -7,7 +7,7 @@ The model is defined  as
 
 $$
 \hat{H}  =   \sum_{ b =  \left< i,j \right>  } \sum_{\sigma=1}^{N}  \left(
-  \hat{c}^{\dagger}_{i,\sigma} T^{\sigma}_{i,j}    \hat{c}^{}_{j,\sigma}  +  H.c. \right)   +  \sum_{ b=\left< i,j \right> } \frac{s_V V_{i,j}}{2N} \left( [n_{i} - N/2]  +  s_V [ n_{j}  - N/2 ]  \right)^2   + \sum_{i} \frac{U_i}{N} \left( n_i -  \frac{N}{2} \right)^2
+  \hat{c}^{\dagger}_{i,\sigma} T^{\sigma}_{i,j}    \hat{c}^{}_{j,\sigma}  +  H.c. \right)   +  \sum_{ b=\left< i,j \right> } \frac{V_{i,j}}{2N} \left( [n_{i} - N/2]  + [ n_{j}  - N/2 ]  \right)^2   + \sum_{i} \frac{U_i}{N} \left( n_i -  \frac{N}{2} \right)^2
   $$
 
 The  implementation supports all  standard ALF lattices and  the  hopping as  well as  the
@@ -25,7 +25,7 @@ Ham_U2     = 0.d0          ! For bilayer systems
 Ham_V2     = 0.d0          ! For bilayer systems
 ham_Tperp  = 0.d0          ! For bilayer systems
 Ham_Vperp  = 0.d0          ! For bilayer systems
-Ham_SV     = 1.0           ! = +/- 1: Sign convention for interaction
+Ham_Mz     = .T.           ! Logical the choice of the HS field
 /
 ```
 In the above Ham_T, Ham_V, Ham_U are the    nearest  neighbor  hopping, nearest  neighbor  interaction  and Hubbard repulsion on the the first layer.   Ham_T2, Ham_V2, Ham_U2   are  the corresponding quantities  on the second layer.  Ham_Tperp, Ham_Vperp   define  the inter-layer couplings.  Finally Ham_chem  is  the chemical potential.
