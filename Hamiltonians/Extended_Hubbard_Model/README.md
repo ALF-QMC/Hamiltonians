@@ -8,7 +8,7 @@ The model is defined  as
 $$
 \hat{H}  =   \sum_{ b =  \left< i,j \right>  } \sum_{\sigma=1}^{N}  \left(
   \hat{c}^{\dagger}_{i,\sigma} T^{\sigma}_{i,j}    \hat{c}^{}_{j,\sigma}  +  H.c. \right)   +  \sum_{ b=\left< i,j \right> } \frac{V_{i,j}}{2N} \left( [n_{i} - N/2]  + [ n_{j}  - N/2 ]  \right)^2   + \sum_{i} \frac{U_i}{N} \left( n_i -  \frac{N}{2} \right)^2
-  $$
+$$
 
 The  implementation supports all  standard ALF lattices and  the  hopping as  well as  the
 interaction $V$  are  restricted to nearest neighbors.    The parameter file  for  this
@@ -56,10 +56,25 @@ $$
 For  the  single  layer  lattices  with uniform $U$ and $V$,  $U^{eff} =   U  + Z V$
 where  Z=4 (Z=3)   for  the square (honeycomb)  lattice.
 
+If  ```Ham_Mz = .T. ```  the  the code  only works for SU(2) (N=2) spin symmetry and the Haniltonian is written as:
+$$
+\hat{H}  =       \sum_{b=\langle  i,j \rangle } \sum_{\sigma=1}^{N}
+    \hat{c}^{\dagger}_{i,\sigma} T^{\sigma}_{i,j}    \hat{c}^{}_{j,\sigma}  +
+    \sum_{b=\langle  i,j \rangle }
+    \frac{-V_{i,j}}{2N} \sum_{\sigma,\sigma'} \left( [n_{i,\sigma} -1/2]- [n_{i,\sigma'} -1/2]   \right)^2   +
+    \sum_{i}  \frac{U^{eff}_i}{N} \left( n_i -  \frac{N}{2} \right)^2
+$$
+up to a constant, and on each bond we use four fields  to  decouple the $V$-term.  This formulation does better for  sign problem full cases. 
+
+If  ```Ham_Mz = .F.```  then the code is based  on   the first equation of the short discription.  We use only one field per bond.  In this case the sign problem is much more severe. 
 
 ## Observables 
 The code  has  the standard  observables. Note that  the potential and  total  energies  are   defined  as in the  Hamiltonian.   That is   the file Ener\_scalJ   corresponds to
-  $\langle \hat{H}   \rangle$  with  $\hat{H}$  defined  as  in the  first  equation
+  $\langle \hat{H}   \rangle$  with  $\hat{H}$  defined  as  in the  first  (```Ham_Mz = .F.```)  and last (```Ham_Mz = .T.```) equations.
 
 ## Limitations
-As  it  stands  the  code   only  works for    SU(N)  decoupling of  the  Hubbard  interaction.   
+As  it  stands  the  ```Ham_Mz = .T.```  code  is only programmed for  the SU(2) case.  
+
+### Tests
+
+On an $L=6$  square lattice  we  have run the  ```Ham_Mz = .T.```   at 
