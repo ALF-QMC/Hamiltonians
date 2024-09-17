@@ -66,15 +66,15 @@ $$
 $$
 up to a constant, and on each bond we use four fields  to  decouple the $V$-term.  This formulation does better for  sign problem full cases. 
 
-If  ```Ham_Mz = .F.```  then the code is based  on   the first equation of the short discription.  We use only one field per bond.  In this case the sign problem is much more severe. 
+If  `Ham_Mz = .F.`  then the code is based  on   the first equation of the short discription.  We use only one field per bond.  In this case the sign problem is much more severe. 
 
 ## Observables 
-The code  has  the standard  observables. Note that  the potential and  total  energies  are   defined  as in the  Hamiltonian.   That is   the file Ener\_scalJ   corresponds to
-  $\langle \hat{H}   \rangle$  with  $\hat{H}$  defined  as  in the  first  (```Ham_Mz = .F.```)  and last (```Ham_Mz = .T.```) equations.
+The code  has  the standard  observables. Note that  the potential and  total  energies  are   defined  as in the  Hamiltonian.   That is   the file Ener_scalJ   corresponds to
+  $\langle \hat{H}   \rangle$  with  $\hat{H}$  defined  as  in the  first  (`Ham_Mz = .F.`)  and last (`Ham_Mz = .T.`) equations.
 
 ## Limitations
 As  it  stands  the  ```Ham_Mz = .T.```  code  is only programmed for  the SU(2) case.  
 
 ### Tests
 
-On an $L=6$  square lattice  we  have run the  ```Ham_Mz = .T.```   at 
+On an $L=6$  square lattice  we  have run the  `Ham_Mz = .T.`   at `Ham_U = 1.5`  and `Ham_V = 0.75` and the `Ham_Mz = .F.`  code  at `Ham_V = 0.75` we  obtain  $-55.01147 \pm 0.01$  and $-55.033 \pm 0.002$ for the kinetic energy respectively.  
