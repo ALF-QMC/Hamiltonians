@@ -50,10 +50,10 @@ $$
 In the  above
 
 $$
-U^{eff}_{i}    = U_i +  \sum_{b = (n,m)} V_b  \left( \delta_{i,m} +  \delta_{i,n}\right)
+U^{eff}_{i}    = U_i +  \sum_{b = (n,m)} \frac{V_b}{2}  \left( \delta_{i,m} +  \delta_{i,n}\right)
 $$
 
-For  the  single  layer  lattices  with uniform $U$ and $V$,  $U^{eff} =   U  + Z V$
+For  the  single  layer  lattices  with uniform $U$ and $V$,  $U^{eff} =   U  + Z V/2$
 where  Z=4 (Z=3)   for  the square (honeycomb)  lattice.
 
 If  ```Ham_Mz = .T. ```  the  the code  only works for SU(2) (N=2) spin symmetry and the Haniltonian is written as:
