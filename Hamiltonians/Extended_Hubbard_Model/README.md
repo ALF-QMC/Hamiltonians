@@ -66,7 +66,7 @@ $$
     \sum_{i}  \frac{U_i}{N} \left( n_i -  \frac{N}{2} \right)^2
 $$
 
-up to a constant, and on each bond we use four fields  to  decouple the $V$-term.  This formulation does better for  sign problem full cases. 
+up to a constant, and on each bond we use four fields  to  decouple the V-term.  This formulation does better for  sign problem full cases. 
 
 If  `Ham_Mz = .F.`  then the code is based  on   the first equation of the short discription.  We use only one field per bond.  In this case the sign problem is much more severe. 
 
