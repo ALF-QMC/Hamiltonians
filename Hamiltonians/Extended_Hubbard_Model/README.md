@@ -56,7 +56,8 @@ $$
 For  the  single  layer  lattices  with uniform $U$ and $V$,  $U^{eff} =   U  + Z V/2$
 where  Z=4 (Z=3)   for  the square (honeycomb)  lattice.
 
-If  ```Ham_Mz = .T. ```  the  the code  only works for SU(2) (N=2) spin symmetry and the Haniltonian is written as:
+If  ```Ham_Mz = .T. ```  the  the code  only works for SU(2) (N=2) spin symmetry and the Haniltonian is written as
+
 $$
 \hat{H}  =       \sum_{b=\langle  i,j \rangle } \sum_{\sigma=1}^{N}
     \hat{c}^{\dagger}_{i,\sigma} T^{\sigma}_{i,j}    \hat{c}^{}_{j,\sigma}  +
@@ -64,6 +65,7 @@ $$
     \frac{-V_{i,j}}{2N} \sum_{\sigma,\sigma'} \left( [n_{i,\sigma} -1/2]- [n_{i,\sigma'} -1/2]   \right)^2   +
     \sum_{i}  \frac{U^{eff}_i}{N} \left( n_i -  \frac{N}{2} \right)^2
 $$
+
 up to a constant, and on each bond we use four fields  to  decouple the $V$-term.  This formulation does better for  sign problem full cases. 
 
 If  `Ham_Mz = .F.`  then the code is based  on   the first equation of the short discription.  We use only one field per bond.  In this case the sign problem is much more severe. 
@@ -77,4 +79,4 @@ As  it  stands  the  ```Ham_Mz = .T.```  code  is only programmed for  the SU(2)
 
 ### Tests
 
-On an $L=6$  square lattice  we  have run the  `Ham_Mz = .T.`   at `Ham_U = 1.5`  and `Ham_V = 0.75` and the `Ham_Mz = .F.`  code  at `Ham_V = 0.75` we  obtain  $-55.026 \pm 0.009$  and $-55.033 \pm 0.001$ for the kinetic energy respectively.  
+On an $L=6$  square lattice  we  have run the  `Ham_Mz = .T.`   at `Ham_U = 1.5`  and `Ham_V = 0.75` and the `Ham_Mz = .F.`  code  at `Ham_V = 0.75` we  obtain  $-55.023 \pm 0.007$  and $-55.033 \pm 0.001$ for the kinetic energy respectively.  
