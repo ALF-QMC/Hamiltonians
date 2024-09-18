@@ -63,7 +63,7 @@ $$
     \hat{c}^{\dagger}_{i,\sigma} T^{\sigma}_{i,j}    \hat{c}^{}_{j,\sigma}  +
     \sum_{b=\langle  i,j \rangle }
     \frac{-V_{i,j}}{2N} \sum_{\sigma,\sigma'} \left( [n_{i,\sigma} -1/2]- [n_{i,\sigma'} -1/2]   \right)^2   +
-    \sum_{i}  \frac{U^{eff}_i}{N} \left( n_i -  \frac{N}{2} \right)^2
+    \sum_{i}  \frac{U_i}{N} \left( n_i -  \frac{N}{2} \right)^2
 $$
 
 up to a constant, and on each bond we use four fields  to  decouple the $V$-term.  This formulation does better for  sign problem full cases. 
