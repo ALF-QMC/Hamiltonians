@@ -79,4 +79,4 @@ As  it  stands  the  ```Ham_Mz = .T.```  code  is only programmed for  the SU(2)
 
 ### Tests
 
-On an $L=6$  square lattice  we  have run the  `Ham_Mz = .T.`   at `Ham_U = 1.5`  and `Ham_V = 0.75` and the `Ham_Mz = .F.`  code  at `Ham_V = 0.75` we  obtain  $-55.023 \pm 0.007$  and $-55.033 \pm 0.001$ for the kinetic energy respectively.  
+On an $L=6$  square lattice  we  have run the  `Ham_Mz = .T.`   at `Ham_U = 1.5`  and `Ham_V = 0.75` and the `Ham_Mz = .F.`  code  at `Ham_V = 0.75` and `Ham_U = 0`. We  obtain  $-55.023 \pm 0.007$  and $-55.033 \pm 0.001$ for the kinetic energy respectively.  
