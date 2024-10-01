@@ -1,5 +1,5 @@
 #!/usr/bin/sh
-BRANCH="286-make-hamiltonians-list-more-dynamic"
+BRANCH="master"
 HAMILTONIAN_NAME="Extended_Hubbard"
 
 git clone https://git.physik.uni-wuerzburg.de/ALF/ALF.git --branch $BRANCH || exit 1
