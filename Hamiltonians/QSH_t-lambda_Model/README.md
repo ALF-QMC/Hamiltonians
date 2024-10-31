@@ -3,7 +3,7 @@
 
 ## Model definition
 
-The model is defined and discussed in [this article](https://arxiv.org/abs/2410.05059) and is implemented as 
+The model is defined and discussed in [this article](https://arxiv.org/abs/2410.05059) {cite}`Rein24` and is implemented as 
 
 $$
 \hat{H}  =  -t\sum_{\langle\boldsymbol{i},\boldsymbol{j}\rangle}\sum_{\sigma=\uparrow,\downarrow}\sum_{s=1}^{N_{\textrm{SU}(N)}}\big(\hat{c}_{\boldsymbol{i},\sigma,s}^\dagger\hat{c}_{\boldsymbol{j},\sigma,s}+\textrm{h.c.}\big) 
@@ -39,3 +39,7 @@ The code  has  the standard  observables as well as correlations of kinetic ener
 
 ## Limitations
 As  it  stands  the  trial wave function is not implemented such that only the finite temperature and not the projective code can be used. Therefore, the code only works for `Projector = .F.` under  `&VAR_Model_Generic`.
+
+```{bibliography}
+:style: unsrt
+```
