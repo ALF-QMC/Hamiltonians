@@ -245,7 +245,7 @@
         call Ham_V
 
         ! Setup the trial wave function, in case of a projector approach
-        if (Projector) Call Ham_Trial(file_info)
+        if (Projector) Call Ham_Trial()
 #ifdef MPI
         If (Irank_g == 0) then
 #endif
@@ -568,153 +568,17 @@
 !> @brief
 !> Sets the trial wave function
 !--------------------------------------------------------------------
-    Subroutine Ham_Trial(file_info)
+    Subroutine Ham_Trial()
 
-
-#if defined (MPI) || defined(TEMPERING)
-      Use mpi
-#endif
       Use Predefined_Trial
 
       Implicit none
-      Character (len=64), intent(in)  :: file_info
-
 
       Integer :: N_part, nf
-#ifdef MPI
-      Integer        :: Isize, Irank, irank_g, isize_g, igroup, ierr
-      Integer        :: STATUS(MPI_STATUS_SIZE)
-      Type(Operator),  dimension(:,:), allocatable  :: OP_tmp
-      Type (Lattice)                                :: Latt_Kekule
-      Real (Kind=Kind(0.d0))  :: A1_p(2), A2_p(2), L1_p(2), L2_p(2), x_p(2),x1_p(2), hop(3)
-      Real (Kind=Kind(0.d0))  :: delta = 0.01
-      Integer :: N, I, I1, I2, nc, nc1, IK_u, I_u, J1, ns
-      Complex (Kind=Kind(0.d0)) :: Z_norm
-
-      CALL MPI_COMM_SIZE(MPI_COMM_WORLD,ISIZE,IERR)
-      CALL MPI_COMM_RANK(MPI_COMM_WORLD,IRANK,IERR)
-      call MPI_Comm_rank(Group_Comm, irank_g, ierr)
-      call MPI_Comm_size(Group_Comm, isize_g, ierr)
-      igroup           = irank/isize_g
-#endif
       ! Use predefined stuctures or set your own Trial  wave function
       N_part = Ndim/2
-      ! Call Predefined_TrialWaveFunction(Lattice_type ,Ndim,  List,Invlist,Latt, Latt_unit, &
-      !    &                            N_part, N_FL,  WF_L, WF_R)
-
-      ! Ham_T_vec     = 1.d0
-      ! Ham_T2_vec    = 1.d0
-      ! Ham_Tperp_vec = 0.d0
-      ! Phi_X_vec     = 0.00
-      ! Call  Set_Default_hopping_parameters_Bilayer_square(Hopping_Matrix_tmp,Ham_T_vec,Ham_T2_vec,Ham_Tperp_vec, Ham_Chem_vec, &
-      !    &                                              Phi_X_vec, Phi_Y_vec, Bulk,  N_Phi_vec, N_FL,&
-      !    &                                              List, Invlist, Latt, Latt_unit )
-      ! Call  Predefined_Hoppings_set_OPT(Hopping_Matrix_tmp,List,Invlist,Latt,  Latt_unit,  Dtau, Checkerboard, Symm, OP_tmp )
-      !  Kekule Mass term to avoid  degeneracy at half-filling.
-
-      Allocate(Op_Tmp(1,N_FL))
-      do n = 1,N_FL
-         Call Op_make(Op_Tmp(1,n),Ndim)
-      enddo
-      Allocate(WF_L(N_FL),WF_R(N_FL))
-        do n=1,N_FL
-           Call WF_alloc(WF_L(n),Ndim,N_part)
-           Call WF_alloc(WF_R(n),Ndim,N_part)
-        enddo
-
-      A1_p = 2.d0 * Latt%a1_p  - Latt%a2_p
-      A2_p =        Latt%a1_p  + Latt%a2_p
-      L1_p = Latt%L1_p
-      L2_p = Latt%L2_p
-      Call Make_Lattice( L1_p, L2_p, A1_p,  A2_p, Latt_Kekule)
-
-      DO I = 1, Latt_Kekule%N
-         x_p = dble(Latt_Kekule%list(I,1))*Latt_Kekule%a1_p + dble(Latt_Kekule%list(I,2))*Latt_Kekule%a2_p
-         IK_u   = Inv_R(x_p,Latt)
-         do nc  = 1, 3
-            select case (nc)
-            case (1)
-               I_u    =  IK_u
-               hop(1) =  1.d0 + delta
-               hop(2) =  1.d0 - delta
-               hop(3) =  1.d0
-            case (2)
-               I_u    = Latt%nnlist(IK_u,0,1)
-               hop(1) =  1.d0
-               hop(2) =  1.d0 + delta
-               hop(3) =  1.d0 - delta
-            case (3)
-               I_u     = Latt%nnlist(IK_u,1,0)
-               hop(1) =  1.d0 - delta
-               hop(2) =  1.d0
-               hop(3) =  1.d0 + delta
-            end select
-            x_p = dble(Latt%list(I_u,1))*Latt%a1_p + dble(Latt%list(I_u,2))*Latt%a2_p
-            do ns = 0,1
-               I1 = invlist(I_u,1+2*ns)
-               do nc1 = 1,3
-                  select case (nc1)
-                  case (1)
-                     J1 = invlist(I_u,2+2*ns)
-                  case (2)
-                     J1 = invlist(Latt%nnlist(I_u,1,-1),2+2*ns)
-                  case (3)
-                     J1 = invlist(Latt%nnlist(I_u,0,-1),2+2*ns)
-                  end select
-
-                  do n = 1,N_FL
-                     Op_Tmp(1,n)%O(I1,J1) =   cmplx( - hop(nc1),    0.d0, kind(0.D0))
-                     Op_Tmp(1,n)%O(J1,I1) =   cmplx( - hop(nc1),    0.d0, kind(0.D0))
-                  enddo
-               enddo
-            enddo
-         enddo
-      Enddo
-      do n = 1,N_FL
-         Do I = 1,Ndim
-            Op_Tmp(1,n)%P(i) = i
-         Enddo
-         Op_Tmp(1,n)%g    = cmplx(1.d0, 0.d0,kind(0.d0))
-         Op_Tmp(1,n)%alpha= cmplx(0.d0,0.d0, kind(0.D0))
-         Call Op_set(Op_Tmp(1,n))
-      Enddo
-      
-      Do nf = 1,N_FL
-         Call Diag(Op_tmp(1,nf)%O,Op_tmp(1,nf)%U,Op_tmp(1,nf)%E)
-         do I2=1,N_part
-            do I1=1,Ndim
-               WF_L(nf)%P(I1,I2)=Op_tmp(1,nf)%U(I1,I2)
-               WF_R(nf)%P(I1,I2)=Op_tmp(1,nf)%U(I1,I2)
-            enddo
-         enddo
-         WF_L(nf)%Degen = Op_tmp(1,nf)%E(N_part+1) - Op_tmp(1,nf)%E(N_part)
-         WF_R(nf)%Degen = Op_tmp(1,nf)%E(N_part+1) - Op_tmp(1,nf)%E(N_part)
-      enddo
-
-      Do nf = 1,N_FL
-         Call WF_overlap(WF_L(nf), WF_R(nf), Z_norm)
-         !Write(6,*) " Z_norm ", Z_norm
-      enddo
-
-      Do nf = 1,N_FL
-         Call Op_clear(OP_tmp(1,nf),Ndim)
-      enddo
-      Deallocate (OP_tmp)
-      !Call Predefined_hoppings_clear(Hopping_Matrix_tmp)
-      !Deallocate (Ham_T_vec, Ham_Tperp_vec, Ham_T2_vec, Ham_Chem_vec, Phi_X_vec, Phi_Y_vec,  N_Phi_vec )
-
-#ifdef MPI
-      If (Irank_g == 0) then
-#endif
-         OPEN(Unit = 50,file=file_info,status="unknown",position="append")
-         Do nf = 1,N_FL
-            Write(50,*) 'Degen of right trial wave function: ', WF_R(nf)%Degen
-            Write(50,*) 'Degen of left  trial wave function: ', WF_L(nf)%Degen
-         enddo
-         close(50)
-#ifdef MPI
-      endif
-#endif
+      Call Predefined_TrialWaveFunction(Lattice_type ,Ndim,  List,Invlist,Latt, Latt_unit, &
+           &                            N_part, N_FL,  WF_L, WF_R)
 
     end Subroutine Ham_Trial
 
