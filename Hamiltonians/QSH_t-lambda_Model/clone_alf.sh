@@ -1,4 +1,4 @@
-#!/usr/bin/sh
+#!/bin/sh
 BRANCH="master"
 HAMILTONIAN_NAME="QSH"
 
