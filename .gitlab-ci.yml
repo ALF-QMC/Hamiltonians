@@ -8,6 +8,8 @@ pages:
   artifacts:
     paths:
       - public
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
 
 prep_tests:
   image: git.physik.uni-wuerzburg.de:25812/z03/pdi/debian:bookworm-buildd
