@@ -47,11 +47,11 @@ Bookworm:
 Intel21:
     image: git.physik.uni-wuerzburg.de:25812/alf/alf_docker/pyalf-requirements/bullseye-intel
     variables: {MACHINE: INTEL}
-IntelLatest:
-    image: git.physik.uni-wuerzburg.de:25812/alf/alf_docker/pyalf-requirements/bookworm-intel
+Intel-2024.2:
+    image: git.physik.uni-wuerzburg.de:25812/alf/alf_docker/pyalf-requirements/bookworm-intel-2024.2
     variables: {MACHINE: INTEL}
-IntelLLVMLatest:
-    image: git.physik.uni-wuerzburg.de:25812/alf/alf_docker/pyalf-requirements/bookworm-intel
+IntelLLVM-2024.2:
+    image: git.physik.uni-wuerzburg.de:25812/alf/alf_docker/pyalf-requirements/bookworm-intel-2024.2
     variables: {MACHINE: INTELLLVM}
 PGI-21-03:
     image: git.physik.uni-wuerzburg.de:25812/alf/alf_docker/pyalf-requirements/bullseye-pgi-21-03
