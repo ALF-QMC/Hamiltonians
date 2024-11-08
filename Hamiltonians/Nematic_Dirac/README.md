@@ -2,6 +2,3 @@
 
 This Hamiltonian implements the models discussed in {cite}`Schwab22`.
 
-```{bibliography}
-:style: unsrt
-```
