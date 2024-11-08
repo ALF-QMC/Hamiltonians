@@ -1695,7 +1695,7 @@
 !>  Routine returns:
 !>  <O_{r,\delta} O_{r^{\prime},\delta^{\prime}} >
 !-----------------------------------------------------------------------
-     Complex (Kind=Kind(0.d0)) function Predefined_Obs_SO3_tau(XR, XRP, nb1, nb2,\
+     Complex (Kind=Kind(0.d0)) function Predefined_Obs_SO3_tau(XR, XRP, nb1, nb2, &
          GT0,G0T,G00,GTT, Invlist_Bonds, N_SUN, N_FL)
  
        Implicit none
@@ -1917,7 +1917,7 @@
 !>  Routine returns:
 !>  <K_{r,\delta} K_{r^{\prime},\delta^{\prime}} >
 !-----------------------------------------------------------------------
-     Complex (Kind=Kind(0.d0)) function Predefined_Obs_Kin_tau(XR, XRP, nb1, nb2,\
+     Complex (Kind=Kind(0.d0)) function Predefined_Obs_Kin_tau(XR, XRP, nb1, nb2, &
          GT0,G0T,G00,GTT, Invlist_nnBonds, N_SUN, N_FL)
  
        Implicit none
