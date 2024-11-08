@@ -1,0 +1,78 @@
+&VAR_ham_name
+ham_name = "AFM_N_S"  ! Name of Hamiltonian
+/
+
+&VAR_AFM_N_S
+Lattice_type = "Square"  ! Implemented: Square, N_leg_ladder and Open_square
+L1 = 4  ! Size of lattice in first dimension
+L2 = 4  ! Size of lattice in second dimension
+N_SUN = 2  ! SU(N) symmtry
+N_Spin = 2  ! 2*S
+Projector = .T.  ! Use projetive finite temperature method
+Symm = .T.  ! Use symmetric Trotter decomposition
+ham_J = 1.0d0  ! Antiferromagnetic interaction strength
+ham_U = 1.0d0  ! On-site Hubbard term for freezing out charge fluctuations
+ham_J2 = -1.0d0  ! Projection parameter for going to fully symmetric representation
+dtau = 0.1d0  ! Imaginary time step
+beta = 0.5d0  ! Reciprcal temperature
+theta = 2.0d0  ! Zero-temperature projection parameter
+pinning_factor = 1.0d0  ! Factor by which a single J-value will be multiplied to achieve phase pinning.
+pinning_x = 0  ! x coordinate of pinned bond
+pinning_y = 0  ! y coordinate of pinned bond
+/
+
+&VAR_QMC
+CPU_MAX = 0.0d0  ! Code stops after CPU_MAX hours, if 0 or not specified, the code stops after Nbin bins
+Delta_t_Langevin_HMC = 0.1d0  ! Time step for Langevin or HMC
+Global_moves = .F.  ! Allows for global moves in space and time.
+Global_tau_moves = .F.  ! Allows for global moves on a single time slice.
+HMC = .F.  ! HMC update
+LOBS_EN = 0  ! End measurements at time slice LOBS_EN
+LOBS_ST = 0  ! Start measurements at time slice LOBS_ST
+sequential = .T.  ! Conventional updating scheme
+Langevin = .F.  ! Langevin update
+Leapfrog_steps = 0  ! Number of leapfrog iterations
+N_HMC_sweeps = 1  ! Number of HMC sweeps
+Amplitude = 1.0d0  ! Width of the box distribution for update of type t=3,4 fields.  Defaults  to 1.0.
+Ltau = 1  ! 1 to calculate time-displaced Green functions; 0 otherwise.
+Max_Force = 5.0d0  ! Max Force for Langevin
+N_global = 1  ! Number of global moves per sweep.
+N_global_tau = 1  ! Number of global moves that will be carried out on a single time slice.
+Nbin = 5  ! Number of bins.
+Nsweep = 20  ! Number of sweeps per bin.
+Nt_sequential_end = -1  ! 
+Nt_sequential_start = 0  ! 
+Nwrap = 10  ! Stabilization. Green functions will be computed from scratch after each time interval Nwrap*Dtau.
+Propose_S0 = .F.  ! Proposes single spin flip moves with probability exp(-S0).
+/
+
+&VAR_errors
+N_Back = 1  ! If set to 1, substract background in correlation functions. Is ignored in Python analysis.
+N_Cov = 0  ! If set to 1, covariance computed for time-displaced correlation functions. Is ignored in Python analysis.
+N_auto = 0  ! If > 0, calculate autocorrelation. Is ignored in Python analysis.
+N_rebin = 1  ! Rebinning: Number of bins to combine into one.
+N_skip = 1  ! Number of bins to be skipped.
+/
+
+&VAR_TEMP
+N_Tempering_frequency = 10  ! The frequency, in units of sweeps, at which the exchange moves are carried out.
+N_exchange_steps = 6  ! Number of exchange moves.
+Tempering_calc_det = .T.  ! Specifies whether the fermion weight has to be taken into account while tempering. Can be set to .F. if the parameters that get varied only enter the Ising action S_0
+mpi_per_parameter_set = 2  ! Number of mpi-processes per parameter set.
+/
+
+&VAR_Max_Stoch
+Checkpoint = .F.  ! 
+NBins = 250  ! Number of bins for Monte Carlo.
+NSweeps = 70  ! Number of sweeps per bin.
+N_alpha = 14  ! Number of temperatures.
+Ndis = 2000  ! Number of boxes for histogram.
+Ngamma = 400  ! Number of Dirac delta-functions for parametrization.
+Nwarm = 20  ! The Nwarm first bins will be ommitted.
+Om_en = 10.0d0  ! Frequency range upper bound.
+Om_st = -10.0d0  ! Frequency range lower bound.
+R = 1.2d0  ! 
+Tolerance = 0.1d0  ! 
+alpha_st = 1.0d0  ! 
+/
+

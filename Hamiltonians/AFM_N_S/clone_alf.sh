@@ -1,5 +1,5 @@
-#!/usr/bin/sh
-BRANCH="master"
+#!/bin/sh
+BRANCH="300-hdf5-fix-libdir"
 HAMILTONIAN_NAME="AFM_N_S"
 
 git clone https://git.physik.uni-wuerzburg.de/ALF/ALF.git --branch $BRANCH || exit 1

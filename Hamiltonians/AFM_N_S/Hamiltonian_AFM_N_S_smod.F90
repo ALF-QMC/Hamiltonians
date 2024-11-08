@@ -3,6 +3,7 @@
 
       Use Operator_mod
       Use Lattices_v3
+      Use WaveFunction_mod
       ! Use Observables
 
       Implicit none
@@ -32,23 +33,28 @@
       Integer, allocatable   :: checker_inter(:,:,:), checker_intra(:,:,:), L_FAM(:)
 
       !#PARAMETERS START# VAR_AFM_N_S
-      Character (len=64) :: Lattice_type = 'Square'
-      Integer :: L1 = 4
-      Integer :: L2 = 4
-      !Integer :: N_SUN = 2
-      Integer :: N_Spin = 1
-      !logical :: Projector = .false.
-      !logical :: Symm = .false.
-      real(dp) :: ham_J = 1.d0
-      real(dp) :: ham_U = 1.d0
-      real(dp) :: ham_J2 = -1.d0
-      real(dp) :: dtau = 0.1d0
-      real(dp) :: beta = 5.d0
-      real(dp) :: theta = 0.d0
-      real(dp) :: pinning_factor = 1.d0
-      integer :: pinning_x = 0
-      integer :: pinning_y = 0
+      Character (len=64) :: Lattice_type = 'Square'  ! Implemented: Square, N_leg_ladder and Open_square
+      Integer :: L1 = 4                  ! Size of lattice in first dimension
+      Integer :: L2 = 4                  ! Size of lattice in second dimension
+      !Integer :: N_SUN = 2              ! SU(N) symmtry
+      Integer :: N_Spin = 1              ! 2*S
+      !logical :: Projector = .false.    ! Use projetive finite temperature method
+      !logical :: Symm = .false.         ! Use symmetric Trotter decomposition
+      real(dp) :: ham_J = 1.d0           ! Antiferromagnetic interaction strength
+      real(dp) :: ham_U = 1.d0           ! On-site Hubbard term for freezing out charge fluctuations
+      real(dp) :: ham_J2 = -1.d0         ! Projection parameter for going to fully symmetric representation
+      real(dp) :: dtau = 0.1d0           ! Imaginary time step
+      real(dp) :: beta = 5.d0            ! Reciprcal temperature
+      real(dp) :: theta = 0.d0           ! Zero-temperature projection parameter
+      real(dp) :: pinning_factor = 1.d0  ! Factor by which a single J-value will be multiplied to achieve phase pinning.
+      integer :: pinning_x = 0           ! x coordinate of pinned bond
+      integer :: pinning_y = 0           ! y coordinate of pinned bond
       !#PARAMETERS END#
+
+#ifdef MPI
+      Integer        :: Isize, Irank, irank_g, isize_g, igroup
+      Integer        :: STATUS(MPI_STATUS_SIZE)
+#endif
 
       Integer :: latt_id
       Type (Lattice),   target :: Latt
@@ -75,6 +81,15 @@
       Subroutine Ham_Set_AFM_N_S()
          Implicit none
          Integer :: N_part
+         
+#ifdef MPI
+         integer :: ierr
+         CALL MPI_COMM_SIZE(MPI_COMM_WORLD,ISIZE,IERR)
+         CALL MPI_COMM_RANK(MPI_COMM_WORLD,IRANK,IERR)
+         call MPI_Comm_rank(Group_Comm, irank_g, ierr)
+         call MPI_Comm_size(Group_Comm, isize_g, ierr)
+         igroup           = irank/isize_g
+#endif
 
 
          ! From dynamically generated file "Hamiltonian_AFM_N_S_read_write_parameters.F90"
@@ -392,7 +407,7 @@
                enddo
             enddo
          else
-            write(error_unit, *) "Pinning note defined for lattice " // Lattice_type
+            write(error_unit, *) "Pinning not defined for lattice " // Lattice_type
             error stop
          endif
          overwrite_g_factor(:) = sqrt(pinning_factor)
@@ -1575,6 +1590,323 @@
         Enddo
      Enddo
    end Subroutine Latt_add_orbitals
+
+      
+   Subroutine Hopping_add_orbitals(OP_old, OP_new, N_sub)
+      Implicit none
+      Type(Operator), Intent(In)               :: OP_old(:,:)
+      Type(Operator), Intent(Out), allocatable :: OP_new(:,:)
+      Integer, Intent(IN)                      :: N_sub
+      
+      Integer :: I, J, nI, nJ, I2, J2, Ndim_old, Ndim_new, n
+      Complex (Kind=Kind(0.d0)) :: chem, t
+   
+      Ndim_old = size(OP_old(1,1)%O,1)
+      
+      allocate(Op_new(1,1))
+      Ndim_new = Ndim_old*N_sub
+      
+      Call Op_make(Op_new(1,1),Ndim_new)
+      
+      do I=1,Ndim_old
+         do J=1,Ndim_old
+            t = OP_old(1,1)%O(I,J)
+            do n=1, N_sub
+               I2 = (I-1)*N_sub + n
+               J2 = (J-1)*N_sub + n
+               OP_new(1,1)%O(I2,J2) = t
+            enddo
+         enddo
+      enddo
+      
+      Do I = 1,Ndim_old
+         do nI = 1, N_sub
+            I2 = (I-1)*N_sub + nI
+            Op_new(1,1)%P(I2) = I2
+         enddo
+      Enddo
+      Op_new(1,1)%g     = Op_old(1,1)%g
+      Op_new(1,1)%alpha = Op_old(1,1)%alpha
+      Call Op_set(Op_new(1,1))
+
+   end Subroutine Hopping_add_orbitals
+
+   !--------------------------------------------------------------------
+   !> @author 
+   !> ALF-project
+   !>
+   !> @brief 
+   !>    Hopping, with or without checkerboard  
+   !>    Per flavor, the  hopping is given by
+   !>    \f[  e^{ - \Delta \tau  H_t  }   = \prod_{n=1}^{N} e^{ - \Delta \tau_n  H_t(n) }   \f]
+   !>    If  _Symm_ is set to true and if  _Checkeborad_ is on, then  one will carry out a
+   !>    symmetric decomposition so as to preserve  the hermitian properties of the hopping.
+   !>    Thereby   OP_T has dimension OP_T(N,N_FL)
+   !> @param [in]  Latttice_type
+   !>    Character(64)
+   !>\verbatim 
+   !>     Square,  Honeycomb, Pi_Flux 
+   !>\endverbatim 
+   !> @param [in]  Latt_unit
+   !>    Type(Unit_cell)
+   !> \verbatim
+   !>     Contains number of orbitals per unit cell and positions, as well as coordination number
+   !> \endverbatim
+   !> @param [in]  Ndim
+   !>    Integer
+   !> \verbatim
+   !>     Number of orbitals      
+   !> \endverbatim
+   !> @param [in]  List, Invlist
+   !>    Integer(:,:)
+   !> \verbatim
+   !>      List(I=1.. Ndim,1)    =   Unit cell of site I    
+   !>      List(I=1.. Ndim,2)    =   Orbital index  of site I    
+   !>      Invlist(Unit_cell,Orbital) = site I    
+   !> \endverbatim
+   !> @param [in]    Latt
+   !>    Type(Lattice)
+   !> \verbatim
+   !>      The Lattice
+   !> \endverbatim
+   !> @param [in]  Dtau
+   !>    Real
+   !> \verbatim
+   !>      Imaginary time step
+   !> \endverbatim
+   !> @param [in]  Ham_T
+   !>    Real
+   !> \verbatim
+   !>      Hopping matrix element
+   !> \endverbatim
+   !> @param [in]  Ham_Chem
+   !>    Real
+   !> \verbatim
+   !>      Chemical potential
+   !> \endverbatim
+   !> @param [in]  XB_X, YB_Y
+   !>    Real
+   !> \verbatim
+   !>      X, Y  Boundary conditions
+   !> \endverbatim
+   !> @param [in]  Phi_X, Phi_Y 
+   !>    Real
+   !> \verbatim
+   !>      X, Y  Fluxes
+   !> \endverbatim
+   !> @param [in]  N_FL
+   !>    Integer
+   !> \verbatim
+   !>      Flavors
+   !> \endverbatim
+   !> @param [in]  Checkerboard
+   !>    Logical
+   !> \verbatim
+   !>      Allows for checkerboard decomposition
+   !> \endverbatim
+   !> @param [in]  Symm
+   !>    Logical
+   !> \verbatim
+   !>      Allows for symmetric checkerboard decomposition
+   !> \endverbatim
+   !> @param [out]  OP_T 
+   !>    Type(operator)(N,N_FL)
+   !> \verbatim
+   !>      Hopping
+   !> \endverbatim
+   !> @param [in]  Dimer 
+   !>    Real, Optional.  Modulation of hopping that breaks lattice symmetries so as to generate a unique
+   !>    ground state for the half-filled case.  This option is  effective only  if the checkerboard
+   !>    decomposition is not used. It is presently implemented for the square and one-dimensional lattices.
+   !> \verbatim
+   !>      Hopping
+   !> \endverbatim
+   !>       
+   !------------------------------------------------------------------
+         Subroutine Predefined_Hopping0(Lattice_type, Ndim, List,Invlist,Latt,  Latt_unit,  &
+            &                        L1, L2, List_orb, Invlist_orb, &
+            &                        Dtau, Ham_T, Ham_Chem, XB_X, XB_Y, Phi_X, Phi_Y, &
+            &                        N_FL, OP_T )
+   
+           Implicit none
+   
+           Character (len=64), Intent(IN)               :: Lattice_type
+           Integer, Intent(IN)                          :: Ndim, N_FL, L1, L2
+           Integer, Intent(inout), Dimension(:,:)          :: List, Invlist, List_orb, Invlist_orb
+           Type(Lattice),  Intent(in)                   :: Latt
+           Type(Unit_cell),Intent(in)                   :: Latt_unit
+           Real (Kind=Kind(0.d0)), Intent(In)           :: Dtau, Ham_T, Ham_Chem, XB_X, XB_Y, Phi_X, Phi_Y
+           
+           Type(Operator), Intent(Out),  dimension(:,:), allocatable  :: Op_T 
+   
+   
+           !Local
+           Integer :: I, I1, J1, I2, n, Ncheck,nc, nc1, no, N_Fam, L_FAM, I1x, I1y, n1, I2x, I2y
+           Complex (Kind=Kind(0.d0)) :: ZX, ZY
+           Real    (Kind=Kind(0.d0)) :: del_p(2), X, g
+   
+   
+            allocate(Op_T(1,N_FL))
+            do n = 1,N_FL
+               Call Op_make(Op_T(1,n),Ndim)
+               nc = 1
+               Select case (Lattice_type)
+               Case ("Square")
+                 ZX  =  exp( cmplx(0.d0, 2.d0 * acos(-1.d0)*Phi_X/Xnorm(Latt%L1_p), kind=kind(0.d0) ) )
+                 ZY  =  exp( cmplx(0.d0, 2.d0 * acos(-1.d0)*Phi_Y/Xnorm(Latt%L2_p), kind=kind(0.d0) ) )
+                 DO I = 1, Latt%N
+                   I1 = Latt%nnlist(I,1,0)
+                   I2 = Latt%nnlist(I,0,1)
+                   If ( Latt%list(I,1) == 0 ) then
+                     Op_T(nc,n)%O(I,I1) = cmplx(-Ham_T*XB_X, 0.d0, kind(0.D0))*ZX
+                     Op_T(nc,n)%O(I1,I) = cmplx(-Ham_T*XB_X, 0.d0, kind(0.D0))*conjg(ZX)
+                   else
+                     Op_T(nc,n)%O(I,I1) = cmplx(-Ham_T, 0.d0, kind(0.D0))*ZX
+                     Op_T(nc,n)%O(I1,I) = cmplx(-Ham_T, 0.d0, kind(0.D0))*conjg(ZX)
+                   endif
+                   If ( Latt%list(I,2) == 0 ) then
+                     Op_T(nc,n)%O(I,I2) = cmplx(-Ham_T*XB_Y,    0.d0, kind(0.D0))*ZY
+                     Op_T(nc,n)%O(I2,I) = cmplx(-Ham_T*XB_Y,    0.d0, kind(0.D0))*conjg(ZY)
+                   else
+                     Op_T(nc,n)%O(I,I2) = cmplx(-Ham_T     ,    0.d0, kind(0.D0))*ZY
+                     Op_T(nc,n)%O(I2,I) = cmplx(-Ham_T     ,    0.d0, kind(0.D0))*conjg(ZY)
+                   endif
+                   Op_T(nc,n)%O(I ,I) = cmplx(-Ham_chem, 0.d0, kind(0.D0))
+                 enddo
+               Case ("N_leg_ladder")
+                 ZX  =  exp( cmplx(0.d0, 2.d0 * acos(-1.d0)*Phi_X/Xnorm(Latt%L1_p), kind=kind(0.d0) ) )
+                 do I1x = 1, Latt%N
+                   do I1y = 1, Latt_Unit%Norb
+                     I1 = invlist(I1x, I1y)
+                     Op_T(nc,n)%O(I1 ,I1) = cmplx(-Ham_chem, 0.d0, kind(0.D0))
+                     do nc1 = 1, 2
+                       I2x = I1x
+                       I2y = I1y
+                       if (nc1 == 1 ) I2x = I1x+1
+                       if (nc1 == 2 ) I2y = I1y+1
+                       if (I2y > Latt_Unit%Norb) cycle
+                       if (I2x > Latt%N) then
+                         I2x = 1
+                         I2 = invlist(I2x, I2y)
+                         Op_T(nc,n)%O(I1,I2) = cmplx(-Ham_T*XB_X, 0.d0, kind(0.D0))*ZX
+                         Op_T(nc,n)%O(I2,I1) = cmplx(-Ham_T*XB_X, 0.d0, kind(0.D0))*conjg(ZX)
+                       else
+                         I2 = invlist(I2x, I2y)
+                         Op_T(nc,n)%O(I1,I2) = cmplx(-Ham_T, 0.d0, kind(0.D0))
+                         Op_T(nc,n)%O(I2,I1) = cmplx(-Ham_T, 0.d0, kind(0.D0))
+                       endif
+                     enddo
+                   enddo
+                 enddo
+               Case ("Open_square")
+                 ZX  =  exp( cmplx(0.d0, 2.d0 * acos(-1.d0)*Phi_X/Xnorm(Latt%L1_p), kind=kind(0.d0) ) )
+                 do I1x = 1, L1
+                   do I1y = 1, L2
+                     I1 = Invlist_orb(I1x, I1y)
+                     Op_T(nc,n)%O(I1 ,I1) = cmplx(-Ham_chem, 0.d0, kind(0.D0))
+                     do nc1 = 1, 2
+                       I2x = I1x
+                       I2y = I1y
+                       if (nc1 == 1 ) I2x = I1x+1
+                       if (nc1 == 2 ) I2y = I1y+1
+                       ! if (I2x > L1 .or. I2y > L2) cycle
+                       ! I2 = Invlist_orb(I2x, I2y)
+                       ! Op_T(nc,n)%O(I1,I2) = cmplx(-Ham_T, 0.d0, kind(0.D0))
+                       ! Op_T(nc,n)%O(I2,I1) = cmplx(-Ham_T, 0.d0, kind(0.D0))
+                       if (I2y > L2) cycle
+                       if (I2x > L1) then
+                         I2x = 1
+                         I2 = Invlist_orb(I2x, I2y)
+                         Op_T(nc,n)%O(I1,I2) = cmplx(-Ham_T*XB_X, 0.d0, kind(0.D0))*ZX
+                         Op_T(nc,n)%O(I2,I1) = cmplx(-Ham_T*XB_X, 0.d0, kind(0.D0))*conjg(ZX)
+                       else
+                         I2 = Invlist_orb(I2x, I2y)
+                         Op_T(nc,n)%O(I1,I2) = cmplx(-Ham_T, 0.d0, kind(0.D0))
+                         Op_T(nc,n)%O(I2,I1) = cmplx(-Ham_T, 0.d0, kind(0.D0))
+                       endif
+                     enddo
+                   enddo
+                 enddo
+               Case ("Honeycomb")
+                 X = 2.d0 * acos(-1.d0)*Phi_X / ( Xnorm(Latt%L1_p) * (Xnorm(Latt%a1_p)**2)  )
+                 DO I = 1, Latt%N
+                   do no = 1,Latt_unit%Norb
+                     I1 = Invlist(I,no)
+                     Op_T(nc,n)%O(I1 ,I1) = cmplx(-Ham_chem, 0.d0, kind(0.D0))
+                   enddo
+                   I1 = Invlist(I,1)
+                   J1 = I1
+                   Do nc1 = 1,Latt_unit%N_coord
+                     select case (nc1)
+                     case (1)
+                       J1 = invlist(I,2)
+                       del_p(:)  =  Latt_unit%Orb_pos_p(2,:) 
+                     case (2)
+                       J1 = invlist(Latt%nnlist(I,1,-1),2)
+                       del_p(:)   =  Latt%a1_p(:) - Latt%a2_p(:)  + Latt_unit%Orb_pos_p(2,:)
+                     case (3)
+                       J1 = invlist(Latt%nnlist(I,0,-1),2) 
+                       del_p(:)   =  - Latt%a2_p(:) +  Latt_unit%Orb_pos_p(2,:) 
+                     case default
+                       Write(error_unit,*) ' Error in  Predefined_Hopping0 '  
+                       error stop
+                     end select
+                     ZX = exp( cmplx(0.d0, X*Iscalar(Latt%a1_p,del_p), kind(0.D0) ) )
+                     Op_T(nc,n)%O(I1,J1) = cmplx(-Ham_T,    0.d0, kind(0.D0)) * ZX
+                     Op_T(nc,n)%O(J1,I1) = cmplx(-Ham_T,    0.d0, kind(0.D0)) * CONJG(ZX) 
+                   Enddo
+                 Enddo
+               case("Pi_Flux")
+                 DO I = 1, Latt%N
+                   do no = 1,Latt_unit%Norb
+                     I1 = Invlist(I,no)
+                     Op_T(nc,n)%O(I1 ,I1) = cmplx(-Ham_chem, 0.d0, kind(0.D0))
+                   enddo
+                   I1 = Invlist(I,1)
+                   J1 = I1
+                   Do nc1 = 1,Latt_unit%N_coord
+                     select case (nc1)
+                     case (1)
+                       J1 = invlist(I,2) 
+                     case (2)
+                       J1 = invlist(Latt%nnlist(I,0, 1),2) 
+                     case (3)
+                       J1 = invlist(Latt%nnlist(I,-1,1),2) 
+                     case (4)
+                       J1 = invlist(Latt%nnlist(I,-1,0),2) 
+                     case default
+                       Write(error_unit,*) ' Error in Predefined_Hopping0 '  
+                       error stop
+                     end select
+                     if (nc1 == 1 ) then
+                       Op_T(nc,n)%O(I1,J1) = cmplx( Ham_T,    0.d0, kind(0.D0))
+                       Op_T(nc,n)%O(J1,I1) = cmplx( Ham_T,    0.d0, kind(0.D0))
+                     Else
+                       Op_T(nc,n)%O(I1,J1) = cmplx(-Ham_T,    0.d0, kind(0.D0))
+                       Op_T(nc,n)%O(J1,I1) = cmplx(-Ham_T,    0.d0, kind(0.D0))
+                     endif
+                   Enddo
+                 Enddo
+               case default 
+                 Write(error_unit,*) "Predefined_Hopping0: Lattice '", Lattice_type, "' not yet implemented!"
+                 error stop
+               end select
+               Do I = 1,Ndim
+                 Op_T(nc,n)%P(i) = i 
+               Enddo
+               if ( abs(Ham_T) < 1.E-6  .and.  abs(Ham_chem) < 1.E-6 ) then 
+                 Op_T(nc,n)%g = 0.d0
+               else
+                 Op_T(nc,n)%g = -Dtau
+               endif
+               Op_T(nc,n)%alpha=cmplx(0.d0,0.d0, kind(0.D0))
+               Call Op_set(Op_T(nc,n))
+               !Do I = 1,Size(Op_T(nc,n)%E,1)
+               !   Write(6,*) Op_T(nc,n)%E(I)
+               !Enddo
+            Enddo
+         
+       End Subroutine Predefined_Hopping0
 
 
 !--------------------------------------------------------------------

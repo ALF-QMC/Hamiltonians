@@ -5,3 +5,4 @@ format: jb-book
 root: front.md
 chapters:
 - glob: Hamiltonians/*/README
+- file: bib.md
