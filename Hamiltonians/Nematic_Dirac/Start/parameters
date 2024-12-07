@@ -20,7 +20,7 @@ Global_J = 1.0d0  ! J for proposing global updates
 Global_h = 3.0d0  ! h for proposing global updates
 Phi_1 = 0.0d0  ! Twisted boundary in a1 direction
 Phi_2 = 0.0d0  ! Twisted boundary in a2 direction
-init_type = "random"  ! How to initialize Ising field. Possile values: 'random', 'up', 'down', 'updown'
+init_type = "random"  ! How to initialize Ising field. Possible values: 'random', 'up', 'down', 'updown'
 /
 
 &VAR_QMC
