@@ -25,7 +25,7 @@ Ham_U2     = 0.d0          ! For bilayer systems
 Ham_V2     = 0.d0          ! For bilayer systems
 ham_Tperp  = 0.d0          ! For bilayer systems
 Ham_Vperp  = 0.d0          ! For bilayer systems
-Ham_Mz     = .T.           ! Logical the choice of the HS field
+Mz         = .T.           ! Logical the choice of the HS field
 /
 ```
 In the above Ham_T, Ham_V, Ham_U are the    nearest  neighbor  hopping, nearest  neighbor  interaction  and Hubbard repulsion on the the first layer.   Ham_T2, Ham_V2, Ham_U2   are  the corresponding quantities  on the second layer.  Ham_Tperp, Ham_Vperp   define  the inter-layer couplings.  Finally Ham_chem  is  the chemical potential.
