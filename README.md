@@ -2,6 +2,8 @@
 
 Repository for Hamiltonians that are not part of the [ALF repository](https://git.physik.uni-wuerzburg.de/ALF/ALF), with automatically generated [website](http://gitpages.physik.uni-wuerzburg.de/alf/hamiltonians).
 
+* If any of the systems included here contributes to your research, please remember to **cite** this repository, ALF and associated publications. Check [ALF's license](https://git.physik.uni-wuerzburg.de/ALF/ALF#license). Thank you!
+
 The website is generated using [Jupyter Book](https://jupyterbook.org/), with one documentation file per Hamiltonian. The documentation can be written in different flavors of Markdown (`README.md`), as Jupyter notebook (`README.ipynb`), or reStructuredText (`README.rst`).
 
 ## Running Hamiltonians
