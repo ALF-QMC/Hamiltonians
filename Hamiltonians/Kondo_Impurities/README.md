@@ -3,11 +3,18 @@
 **The code can solve the following models**  
 **Anderson**
 
-$H = \sum_{i,j} \hat{c}^{\dagger}_{i,\sigma} T^{\sigma}_{i,j} \hat{c}^{\phantom\dagger}_{j,\sigma} + \sum_{R,R'=1}^{N_{Imp}} t_{R,R'} \hat{d}^{\dagger}_{R,\sigma}\hat{d}^{\phantom\dagger}_{R',\sigma}  + \sum_{R,\sigma} V_R \hat{c}^{\dagger}_{R,\sigma} \hat{d}^{\phantom\dagger}_{R,\sigma}$
+$H = \sum_{i,j} \hat{c}^{\dagger}_{i,\sigma} T^{\sigma}_{i,j} \hat{c}^{\phantom\dagger}_{j,\sigma} + \sum_{R,R'=1}^{N_{Imp}} t_{R,R'} \hat{d}^{\dagger}_{R,\sigma}\hat{d}^{\phantom\dagger}_{R',\sigma}  + \sum_{R,\sigma} V_R \hat{c}^{\dagger}_{R,\sigma} \hat{d}^{\phantom\dagger}_{R,\sigma}  + \text{H.c.}  + \frac{U}{2} \sum_{R}\left( \hat{n}^{d}_R - 1 \right)^2$
 
 **Kondo**
 
+$H = \sum_{i,j} \hat{c}^{\dagger}_{i,\sigma} T^{\sigma}_{i,j} \hat{c}^{\phantom\dagger}_{j,\sigma} + \sum_{R,R'=1}^{N_{Imp}} J_{R,R'} \vec{\hat{S}}_{R} \cdot \vec{\hat{S}}_{R'}  +  
+\sum_{R,R'=1}^{N_{Imp}}  J^{z}_{R,R'} \hat{S}^{z}_{R}  \hat{S}^{z}_{R'}  + \sum_{R} J^{K}_{R} \vec{\hat{S}}_{R}  \cdot   \vec{\hat{c}}^{\dagger}_{R} \frac{\vec{\sigma}}{2} \vec{\hat{c}}^{\phantom\dagger}_{R} $ 
+
+In the above the hopping is on a square lattice  with the possibility of an altermagnetic term  as  discussed in [this](https://arxiv.org/abs/2601.07138) paper.  
+
 **Name of Hamiltonian: Hamiltonian_Kondo_impurities_smod.F90**
+
+Here are the of things that are implemented: 
 
 - [x] Symmetric Trotter
 - [x] Anderson as well as Kondo impurities
@@ -20,10 +27,16 @@ $H = \sum_{i,j} \hat{c}^{\dagger}_{i,\sigma} T^{\sigma}_{i,j} \hat{c}^{\phantom\
 - [x] Added possibility of alter-magnetic  or spin-nematic band.  $d_{xy}$ and $d_{x^2-y^2}$
 - [ ] Magnetic field. For Kondo as well as for Anderson.  This really not very hard and could be implemented quickly
 - [ ] Projector
-- [ ] 
+
+Please do not hesitate to contact us if you need more features.
 
 ### Usage of the code
 
+Here are examples for parameters.  
+
+Position and interaction of impurities
+
+Hopping and Hubbard U
 ```
 &VAR_Kondo_impurities    !! Variables for the Kondo impurity  code
 ham_T     = 1.d0            ! Hopping parameter !  Conduction.
@@ -35,9 +48,7 @@ Ham_Imp_Kind = "Anderson"   ! Impurity kind "Anderson" or   "Kondo"
 Ham_N_imp = 6               ! # Spin 1/2  impurities 
 /
 ```
-
 Position and interaction of impurities
-
 ```
 &VAR_impurities    !! Variables for the Kondo impurity  code
 Imp_t(1,2)    =  -1.d0 
@@ -54,10 +65,18 @@ Imp_V(2,1,2)  =  1.d0
 Imp_V(3,1,3)  =  1.d0
 /
 ```
+**Anderson**
 
-Imp_t(I,J) Hopping (Anderson) or Heisenberg (Kond) interaction between impurities I,J
+Imp_V(n,R_x,R_y) Hybridization between impurity n and conduction electron 
+$\hat{c}_{R_x,R_y,\sigma}$
 
-Imp_Jz(I,J) Just for Kondo. J_z interaction between I,J impurities
+Imp_t(n,m) Hopping between impurities  n and m
 
-Imp_V(I,R_x,R_y) Hybridization (Anderson) Kondo coupling (Kondo) between impurity I and conduction electron c\_{R_x,R_y}
+**Kondo** 
 
+Imp_V(n,R_x,R_y) Kondo coupling between impurity n and conduction electron 
+$\hat{c}_{R_x,R_y,\sigma}$
+
+Imp_t(n,m) Heisenberg interaction between impurities n,m
+
+Imp_Jz(n,m) J_z interaction between n,m impurities
