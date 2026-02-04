@@ -1,4 +1,4 @@
-# Impurity code Just for SU(2).
+# Kondo Impurity code Just for SU(2).
 
 **Branch: Kondo_Dimensional_Mismatch_2.5**
 
@@ -13,9 +13,9 @@
 - [x] Easy axis anisotropy (Sz Sz) correlations for local spins. Just for Kondo.
 - [x] Particle-hole symmetry is automatically detected and if true, flavor symmetry is used.
 - [x] Added possibility of alter-magnetic  or spin-nematic band.  $d_{xy}$ and $d_{x^2-y^2}$
-- [ ] Magnetic field. For Kondo as well as for Anderson.
+- [ ] Magnetic field. For Kondo as well as for Anderson.  This really not very hard and could be implemented quickly
 - [ ] Projector
-- [ ] We need a better handling of the observables. This will require a slight modification of the analysis code, for multi orbital systems. In particular the analysis should provide an orbital resolved local information.
+- [ ] 
 
 ### Usage of the code
 
