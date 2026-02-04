@@ -1,6 +1,11 @@
-# Kondo Impurity code Just for SU(2).
+# SU(2) Kondo and Anderson impurities.  
 
-**Branch: Kondo_Dimensional_Mismatch_2.5**
+**The code can solve the following models**  
+**Anderson**
+
+$H = \sum_{i,j} \hat{c}^{\dagger}_{i,\sigma} T^{\sigma}_{i,j} \hat{c}^{\phantom\dagger}_{j,\sigma} + \sum_{R,R'=1}^{N_{Imp}} t_{R,R'} \hat{d}^{\dagger}_{R,\sigma}\hat{d}^{\phantom\dagger}_{R',\sigma}  + \sum_{R,\sigma} V_R \hat{c}^{\dagger}_{R,\sigma} \hat{d}^{\phantom\dagger}_{R,\sigma}$
+
+**Kondo**
 
 **Name of Hamiltonian: Hamiltonian_Kondo_impurities_smod.F90**
 
