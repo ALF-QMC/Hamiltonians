@@ -8,7 +8,7 @@ $H = \sum_{i,j} \hat{c}^{\dagger}_{i,\sigma} T^{\sigma}_{i,j} \hat{c}^{\phantom\
 **Kondo**
 
 $H = \sum_{i,j} \hat{c}^{\dagger}_{i,\sigma} T^{\sigma}_{i,j} \hat{c}^{\phantom\dagger}_{j,\sigma} + \sum_{R,R'=1}^{N_{Imp}} J_{R,R'} \vec{\hat{S}}_{R} \cdot \vec{\hat{S}}_{R'}  +  
-\sum_{R,R'=1}^{N_{Imp}}  J^{z}_{R,R'} \hat{S}^{z}_{R}  \hat{S}^{z}_{R'}  + \sum_{R} J^{K}_{R} \vec{\hat{S}}_{R}  \cdot   \vec{\hat{c}}^{\dagger}_{R} \frac{\vec{\sigma}}{2} \vec{\hat{c}}^{\phantom\dagger}_{R} $ 
+\sum_{R,R'=1}^{N_{Imp}}  J^{z}_{R,R'} \hat{S}^{z}_{R}  \hat{S}^{z}_{R'}  + \sum_{R} J^{K}_{R} \vec{\hat{S}}_{R}  \cdot   \vec{\hat{c}}^{\dagger}_{R} \frac{\vec{\sigma}}{2} \vec{\hat{c}}^{\phantom\dagger}_{R}$ 
 
 In the above the hopping is on a square lattice  with the possibility of an altermagnetic term  as  discussed in [this](https://arxiv.org/abs/2601.07138) paper.  
 
