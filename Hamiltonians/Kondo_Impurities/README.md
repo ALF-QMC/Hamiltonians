@@ -32,9 +32,10 @@ Please do not hesitate to contact us if you need more features.
 
 ### Usage of the code
 
+## Input
+
 Here are examples for parameters.  
 
-Position and interaction of impurities
 
 Hopping and Hubbard U
 ```
@@ -65,6 +66,8 @@ Imp_V(2,1,2)  =  1.d0
 Imp_V(3,1,3)  =  1.d0
 /
 ```
+The input parameters have different meanings for different model choice.
+
 **Anderson**
 
 Imp_V(n,R_x,R_y) Hybridization between impurity n and conduction electron 
@@ -80,3 +83,23 @@ $\hat{c}_{R_x,R_y,\sigma}$
 Imp_t(n,m) Heisenberg interaction between impurities n,m
 
 Imp_Jz(n,m) J_z interaction between n,m impurities
+
+
+## Output
+
+As it stands the program computes the local site dependent [composite fermion  Green function](https://arxiv.org/abs/2107.10272)  and the  spin-spin correlations.  
+
+The position and numbering of the impurities is given by the Imp_V(n,Rx,Ry)   input data.
+
+**SU(2) code**   (N_SUN = 2, N_FL = 1)
+
+GreenPsi_n_Rx_Ry_tau   contains  the local composite fermion Green function  $\langle \Psi_{R}(\tau)\Psi^{\dagger}_{R}(\tau) \rangle $ 
+
+SpinZ_tau  contains  the  dynamical spin-spin correlations  $S(n,m,\tau) = \langle \hat{S}^z_n(\tau) \hat{S}^z_m(0) \rangle$  
+
+**U(1) code** (N_SUN = 1, N_FL = 2)   
+
+In the presence of the altermagnetic term,   SU(2) symmetry is broken down to U(1)  and  the files mentioned above acquire a spin index, up,  down.  Aside from this, the structure is the same. 
+
+## Analysis 
+To analyze  the  data  run the  analysis code  $ALF_DIR/Analysis/ana.out *  (or ana_hdf5 if you are opting for HDF5 formatted output.)
