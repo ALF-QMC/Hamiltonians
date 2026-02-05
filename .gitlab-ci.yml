@@ -1,8 +1,9 @@
 pages:
   tags: [k8s]
-  image: git.physik.uni-wuerzburg.de:25812/alf/alf_docker/pyalf-doc/jupyter
+  image: docker.io/node:24-alpine
   script:
-    - jb build .
+    - npm install -g jupyter-book
+    - jupyter-book build --html
     - mkdir public
     - mv _build/html/* public
   artifacts:
@@ -10,6 +11,15 @@ pages:
       - public
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
+
+pages_test:
+  tags: [k8s]
+  image: docker.io/node:24-alpine
+  script:
+    - npm install -g jupyter-book
+    - jupyter-book build --html
+  rules:
+    - if: '$CI_COMMIT_BRANCH != "main"'
 
 prep_tests:
   image: git.physik.uni-wuerzburg.de:25812/z03/pdi/debian:bookworm-buildd

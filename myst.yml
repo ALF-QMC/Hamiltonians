@@ -1,0 +1,17 @@
+version: 1
+project:
+  title: ALF Hamiltonians
+  authors:
+    - name: ALF Collaboration
+  bibliography:
+    - bibfile.bib
+  toc:
+    - file: front.md
+    - pattern: Hamiltonians/*/README*
+    - file: bib.md
+site:
+  options:
+    logo: images/alf_logo_flo.png
+    favicon: images/alf_logo2-old.png
+    folders: true
+  template: book-theme
