@@ -1,8 +1,9 @@
 pages:
   tags: [k8s]
-  image: git.physik.uni-wuerzburg.de:25812/alf/alf_docker/pyalf-doc/jupyter
+  image: docker.io/node:24-alpine
   script:
-    - jb build .
+    - npm install -g jupyter-book
+    - jupyter-book build --html
     - mkdir public
     - mv _build/html/* public
   artifacts:
