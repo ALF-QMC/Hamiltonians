@@ -41,5 +41,4 @@ The code  has  the standard  observables as well as correlations of kinetic ener
 As  it  stands  the  trial wave function is not implemented such that only the finite temperature and not the projective code can be used. Therefore, the code only works for `Projector = .F.` under  `&VAR_Model_Generic`.
 
 ```{bibliography}
-:style: unsrt
 ```

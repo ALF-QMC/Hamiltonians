@@ -2,5 +2,4 @@
 
 $\phantom{\alpha}$
 ```{bibliography}
-:style: unsrt
 ```
