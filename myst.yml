@@ -8,7 +8,6 @@ project:
   toc:
     - file: front.md
     - pattern: Hamiltonians/*/README*
-    - file: bib.md
 site:
   options:
     logo: images/alf_logo_flo.png

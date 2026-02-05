@@ -1,5 +1,0 @@
-# Bibliography
-
-$\phantom{\alpha}$
-```{bibliography}
-```
