@@ -3,7 +3,7 @@ pages:
   image: docker.io/node:24-alpine
   script:
     - npm install -g jupyter-book
-    - jupyter-book build --html
+    - BASE_URL="/alf/hamiltonians" jupyter-book build --html
     - mkdir public
     - mv _build/html/* public
   artifacts:
