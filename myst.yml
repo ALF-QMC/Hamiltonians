@@ -3,6 +3,7 @@ project:
   title: ALF Hamiltonians
   authors:
     - name: ALF Collaboration
+      email: 'tp1-alf@uni-wuerzburg.de'
   bibliography:
     - bibfile.bib
   toc:
