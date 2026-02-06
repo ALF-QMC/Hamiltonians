@@ -1,4 +1,4 @@
-# QSH t-$\lambda$  model
+# QSH t - λ model
 
 
 ## Model definition
