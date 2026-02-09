@@ -1,0 +1,47 @@
+name: Test Hamiltonians
+
+on:
+  push:
+    branches: ['**']
+
+jobs:
+  test:
+    name: Test Hamiltonians
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/alf-qmc/alf-container/pyalf-requirements/${{ matrix.image[0] }}
+    strategy:
+      fail-fast: false
+      matrix:
+        image: 
+          - [bullseye, GNU]
+          - [bookworm, GNU]
+          - [trixie, GNU]
+          - [bullseye-pgi-21-03, PGI]
+          - [bookworm-pgi-24-09, PGI]
+          - [bullseye-intel, INTEL]
+          - [bookworm-intel-2024.2, INTEL]
+          - [bookworm-intel, INTELLLVM]
+        mode: [noMPI, MPI]
+    steps:
+      - uses: actions/checkout@v6
+      - name: Clone compile and run ALF for each Hamiltonian
+        shell: bash --noprofile --norc -eo pipefail
+        run: |
+          for i in Hamiltonians/*/; do
+            echo "Testing $i"
+            cd $GITHUB_WORKSPACE/$i
+            ./clone_alf.sh
+            cd ALF
+            . configure.sh ${{ matrix.image[1] }} Devel ${{ matrix.mode }}
+            make
+            cd ../Start
+            echo ${{ matrix.mode }}
+            if [ "${{ matrix.mode }}" = "MPI" ]; then
+              MPI_OPTS="-n 4"
+              mpiexec --version | grep -iq -e 'Open MPI' -e 'OpenRTE' && MPI_OPTS="$MPI_OPTS --use-hwthread-cpus"
+              mpiexec $MPI_OPTS "$ALF_DIR/Prog/ALF.out"
+            else
+              ../ALF/Prog/ALF.out
+            fi
+          done
