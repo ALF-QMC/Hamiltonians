@@ -6,7 +6,7 @@ on:
 
 jobs:
   test:
-    name: Test Hamiltonians
+    name: Test · ${{ matrix.image[1] }} · ${{ matrix.mode }}
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/alf-qmc/alf-container/pyalf-requirements/${{ matrix.image[0] }}
@@ -36,7 +36,46 @@ jobs:
             . configure.sh ${{ matrix.image[1] }} Devel ${{ matrix.mode }}
             make
             cd ../Start
-            echo ${{ matrix.mode }}
+            if [ "${{ matrix.mode }}" = "MPI" ]; then
+              MPI_OPTS="-n 4"
+              mpiexec --version | grep -iq -e 'Open MPI' -e 'OpenRTE' && MPI_OPTS="$MPI_OPTS --use-hwthread-cpus"
+              mpiexec $MPI_OPTS "$ALF_DIR/Prog/ALF.out"
+            else
+              ../ALF/Prog/ALF.out
+            fi
+          done
+
+  test_macos:
+    name: macOS · ${{ matrix.mode }}
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        mode: [noMPI, MPI]
+    steps:
+      - uses: actions/checkout@v6
+      - name: macOS Toolchain install
+        shell: bash
+        run: |
+          brew update
+          brew install mpich
+          gcc_version=$(brew list --versions gcc | grep -o '[0-9]\+' | head -1)
+          bindir=$(brew --prefix)/bin
+          ln -fs ${bindir}/gfortran-${gcc_version} /usr/local/bin/gfortran
+          ln -fs ${bindir}/gcc-${gcc_version} /usr/local/bin/gcc
+          ln -fs ${bindir}/g++-${gcc_version} /usr/local/bin/g++
+
+      - name: Clone compile and run ALF for each Hamiltonian
+        shell: bash --noprofile --norc -eo pipefail
+        run: |
+          for i in Hamiltonians/*/; do
+            echo "Testing $i"
+            cd $GITHUB_WORKSPACE/$i
+            ./clone_alf.sh
+            cd ALF
+            . configure.sh GNU Devel ${{ matrix.mode }}
+            make
+            cd ../Start
             if [ "${{ matrix.mode }}" = "MPI" ]; then
               MPI_OPTS="-n 4"
               mpiexec --version | grep -iq -e 'Open MPI' -e 'OpenRTE' && MPI_OPTS="$MPI_OPTS --use-hwthread-cpus"
