@@ -181,6 +181,7 @@
       Character (len=64)        :: d_wave_rep   = "DX2Y2"     ! representation for the alter-magnetic term.
       Character (len=64)        :: Ham_Imp_Kind = "ANDERSON"  ! Kondo           /  Anderson 
       Integer                   :: Ham_N_Imp    = 0           ! # of impurities 
+      real(Kind=Kind(0.d0))     :: Ham_B        = 0.d0        ! Magnetic field 
       !#PARAMETERS END#
       !VAR_impurities
       real(Kind=Kind(0.d0)), allocatable :: Imp_t(:,:),  Imp_Jz(:,:), Imp_V(:,:,:)
@@ -289,6 +290,11 @@
              CALL Terminate_on_error(ERROR_HAMILTONIAN,__FILE__,__LINE__)
           endif
 
+          IF ( abs(Ham_B) > 1.D-10 .and. N_FL ==1 )  then
+             WRITE(error_unit,*) 'For the magnetic field, N_FL = 2 is required'
+             CALL Terminate_on_error(ERROR_HAMILTONIAN,__FILE__,__LINE__)
+          endif
+
            If ( (mod(L1,4) /=0  .or.  mod(L2,4) /=0 ) .and. Checkerboard .and. abs(Ham_T_alterm) > 1.D-10  ) then
             Write(error_unit,*) 'The checkerboard decompostion for the altermagnetic term is only defined for lattices with L1,L2 = 4n'
             Write(error_unit,*) 'Consider setting Checkerboard = .false. or using L1,L2=4n'
@@ -355,6 +361,7 @@
              Write(unit_info,*) '# orbs        : ', Ndim
              Write(unit_info,*) '# t           : ', Ham_t
              Write(unit_info,*) '# t_am        : ', Ham_T_alterm
+             Write(unit_info,*) '# B           : ', Ham_B
              Write(unit_info,*) '# Symm. t_am  : ', d_wave_rep
              Write(unit_info,*) '# U           : ', Ham_U
              Write(unit_info,*) '# Flux        : ', N_Phi
@@ -430,6 +437,7 @@
                enddo
             enddo
           enddo
+          
           ! The  explicit  position of the f-impurities is  not  required  at  this  point.
           a1_p(1) =  1.0  ; a1_p(2) =  0.d0
           a2_p(1) =  0.0  ; a2_p(2) =  1.d0
@@ -451,7 +459,7 @@
                 Invlist_c(I,no) = nc
              Enddo 
           Enddo
-          Do I = 1,Latt_f%N
+          Do I = 1,Latt_f%N ! Latt_f%N  = 1
              Do no = 1,Latt_Unit_f%Norb
                 nc = nc + 1
                 List_f   (nc,1) = I
@@ -489,7 +497,7 @@
                       Ic   = Inv_R(ic_p,Latt_c)
                       Invlist_cf_ff(nc,1) = Invlist_f(1,no)     !  f-orbital
                       Invlist_cf_ff(nc,2) = Invlist_c(Ic,1)     !  c-orbital
-                      V_cf_ff(nc)       = Imp_V(no,i1,i2)     !  Amplitude 
+                      V_cf_ff(nc)         = Imp_V(no,i1,i2)     !  Amplitude 
                    endif
                 enddo
              enddo
@@ -546,7 +554,7 @@
           Real (Kind=Kind(0.d0) ), allocatable :: Ham_T_vec(:), Ham_T_vecam(:), Ham_Chem_vec(:), Phi_X_vec(:), Phi_Y_vec(:)
           Integer, allocatable ::   N_Phi_vec(:)
 
-          Integer :: nc_f,nc_tot, n, m,  nc, nf,  nb, N_bonds
+          Integer :: nc_f,nc_tot, n, m,  nc, nf,  nb, N_bonds, N_bonds_eff
           Real (Kind=Kind(0.d0)) ::  Factor, X 
           Type (Operator),     dimension(:,:), allocatable :: Op_T_c, OP_T_cf_ff
           Logical ::  Symm1
@@ -584,18 +592,35 @@
             Call  Set_Default_hopping_parameters_square(Hopping_Matrix_c,Ham_T_vec, Ham_Chem_vec, Phi_X_vec, Phi_Y_vec, &
                &                                      Bulk, N_Phi_vec, N_FL, List_c, Invlist_c, Latt_c, Latt_unit_c )
           endif
-          If  ( str_to_upper(Ham_Imp_Kind) == "ANDERSON"  )  then
+
+          If  ( str_to_upper(Ham_Imp_Kind) == "ANDERSON"  ) then
              Call  Predefined_Hoppings_set_OPT(Hopping_Matrix_c,List_c,Invlist_c,Latt_c,  Latt_unit_c,  Dtau, Checkerboard, Symm, OP_T_c )
              
              Factor =  1.d0 
              If ( Symm )  Factor = 0.5d0
-             N_bonds  = Size(V_cf_ff,1) 
-             Allocate(Op_T_cf_ff(N_bonds,N_FL))
+             N_bonds = Size(V_cf_ff,1) 
+             N_bonds_eff = N_bonds
+             If ( abs(Ham_B) >= 0.d0 )  N_bonds_eff =  N_bonds +  Ham_N_Imp
+             Allocate(Op_T_cf_ff(N_bonds_eff,N_FL))
              do nf = 1,N_FL
-                do nc = 1, N_bonds
+                do nc = 1, N_bonds_eff
                    Call Op_make(Op_T_cf_ff(nc,nf),2)
                 enddo
-                Do nc  =  1, N_bonds
+                nc=0
+                if ( abs(Ham_B) >= 0.D-8 )   then 
+                  do n = 1,Ham_N_Imp
+                     nc = nc + 1
+                     Op_T_cf_ff(nc,nf)%P(1) = 1    !  This is just a place holder.
+                     Op_T_cf_ff(nc,nf)%P(2) = Invlist_f(1,n)  
+                     Op_T_cf_ff(nc,nf)%O(2,2) = cmplx(1.d0,0.d0,kind(0.d0)) 
+                     X = 1.d0
+                     if (nf==2) X = -1.d0 
+                     Op_T_cf_ff(nc,nf)%g = -Dtau * Factor * Ham_B * X/2.d0
+                     Op_T_cf_ff(nc,nf)%alpha=cmplx(0.d0,0.d0, kind(0.D0))
+                  enddo
+                endif   
+                Do n  =  1, N_bonds
+                   nc = nc + 1
                    Op_T_cf_ff(nc,nf)%P(1) = Invlist_cf_ff(nc,1) 
                    Op_T_cf_ff(nc,nf)%P(2) = Invlist_cf_ff(nc,2) 
                    Op_T_cf_ff(nc,nf)%O(1,2) = cmplx(V_cf_ff(nc),0.d0,kind(0.d0))
@@ -639,10 +664,66 @@
              enddo
              deallocate (OP_T_c, OP_T_cf_ff)
              !Write(6,*) "Size OP_T,1: ", Size(OP_T,1)
-          else
-             Call  Predefined_Hoppings_set_OPT(Hopping_Matrix_c,List_c,Invlist_c,Latt_c,  Latt_unit_c,  Dtau, Checkerboard, Symm, OP_T )
+          elseif (str_to_upper(Ham_Imp_Kind) == "KONDO"  )  then 
+
+             If ( abs(Ham_B) >= 1.D-8 ) then
+               Call  Predefined_Hoppings_set_OPT(Hopping_Matrix_c,List_c,Invlist_c,Latt_c,  Latt_unit_c,  Dtau, Checkerboard, Symm, OP_T_c )
+               Allocate(Op_T_cf_ff(Ham_N_Imp,N_FL))
+               Factor =  1.d0 
+               If ( Symm )  Factor = 0.5d0
+               do nf = 1,N_FL
+                  do nc = 1, Ham_N_Imp
+                     Call Op_make(Op_T_cf_ff(nc,nf),2)
+                  enddo
+                  do nc = 1,Ham_N_Imp
+                     Op_T_cf_ff(nc,nf)%P(1) = 1    !  This is just a place holder.
+                     Op_T_cf_ff(nc,nf)%P(2) = Invlist_f(1,nc)  
+                     Op_T_cf_ff(nc,nf)%O(2,2) = cmplx(1.d0,0.d0,kind(0.d0)) 
+                     X = 1.d0 
+                     if (nf==2) X = -1.d0 
+                     Op_T_cf_ff(nc,nf)%g = -Dtau * Factor * Ham_B * X/2.d0
+                     Op_T_cf_ff(nc,nf)%alpha=cmplx(0.d0,0.d0, kind(0.D0))
+                  enddo
+               enddo
+               nc_tot =  size(OP_T_cf_ff,1) + size(OP_T_c,1)
+               If ( Symm )   nc_tot  =  2*size(OP_T_cf_ff,1) + size(OP_T_c,1)
+               Allocate (OP_T(nc_tot,N_FL))
+               do nf  = 1,N_FL
+                  nc  = 0
+                  do n =  1, size(OP_T_cf_ff,1)
+                     nc  = nc  + 1
+                     Call Op_make(Op_T(nc,nf),2)
+                     Call Copy_Op(OP_T(nc,nf), OP_T_cf_ff(n,nf))
+                  enddo
+                  do n =  1, size(OP_T_c,1)
+                     nc  = nc  + 1
+                     Call Op_make(Op_T(nc,nf),2)
+                     Call Copy_Op(OP_T(nc,nf), OP_T_c(n,nf))
+                  enddo
+                  If  (symm) then
+                     do n =  size(OP_T_cf_ff,1),1,-1
+                        nc  = nc  + 1
+                        Call Op_make(Op_T(nc,nf),2)
+                        Call Copy_Op(OP_T(nc,nf), OP_T_cf_ff(n,nf))
+                     enddo
+                  endif
+               enddo
+               !  Clear  memory
+               do  nf  = 1,N_FL
+                  Do  n =  1,size(OP_T_c,1)
+                     Call  Op_clear(OP_T_c(n,nf), 2)
+                  enddo
+                  Do  n =  1,size(OP_T_cf_ff,1)
+                     Call  Op_clear(OP_T_cf_ff(n,nf), 2)
+                  enddo
+               enddo
+               deallocate (OP_T_c, OP_T_cf_ff)
+             else
+               Call  Predefined_Hoppings_set_OPT(Hopping_Matrix_c,List_c,Invlist_c,Latt_c,  Latt_unit_c,  Dtau, Checkerboard, Symm, OP_T )
+             endif
+
           endif
-          
+            
           Deallocate (Ham_T_vec, Ham_Chem_vec, Phi_X_vec, Phi_Y_vec, N_Phi_vec )
           
         end Subroutine Ham_Hop

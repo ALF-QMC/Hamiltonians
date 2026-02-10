@@ -169,7 +169,8 @@ d_wave_rep   ="DXY"
 ham_chem  = 0.d0            ! Chemical potential
 ham_U     = 3.d0            ! Hubbard
 Ham_Imp_Kind = "Kondo"      ! Impuritiy kind
-Ham_N_imp = 2              ! # Spin 1/2  impurities
+Ham_B        = 0.d0         ! Magnetic field
+Ham_N_imp = 2               ! # Spin 1/2  impurities
 /
 
 &VAR_impurities    !! Variables for the Kondo impurity  code
