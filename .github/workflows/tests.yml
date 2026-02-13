@@ -26,7 +26,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - name: Clone compile and run ALF for each Hamiltonian
-        shell: bash --noprofile --norc -eo pipefail
+        shell: bash
         run: |
           for i in Hamiltonians/*/; do
             echo "Testing $i"
@@ -66,7 +66,7 @@ jobs:
           ln -fs ${bindir}/g++-${gcc_version} /usr/local/bin/g++
 
       - name: Clone compile and run ALF for each Hamiltonian
-        shell: bash --noprofile --norc -eo pipefail
+        shell: bash
         run: |
           for i in Hamiltonians/*/; do
             echo "Testing $i"
