@@ -3,12 +3,12 @@
 **The code can solve the following models**  
 **Anderson**
 
-$H = \sum_{i,j} \hat{c}^{\dagger}_{i,\sigma} T^{\sigma}_{i,j} \hat{c}^{\phantom\dagger}_{j,\sigma} + \sum_{R,R'=1}^{N_{Imp}} t_{R,R'} \hat{d}^{\dagger}_{R,\sigma}\hat{d}^{\phantom\dagger}_{R',\sigma}  + \sum_{R,\sigma} V_R \hat{c}^{\dagger}_{R,\sigma} \hat{d}^{\phantom\dagger}_{R,\sigma}  + \text{H.c.}  + \frac{U}{2} \sum_{R}\left( \hat{n}^{d}_R - 1 \right)^2 + \frac{B}{2}\sum_{R,\sigma} \sigma \hat{d}^{\dagger}_{R,\sigma} \hat{d}^{\phantom\dagger}_{R,\sigma}$
+$$H = \sum_{i,j} \hat{c}^{\dagger}_{i,\sigma} T^{\sigma}_{i,j} \hat{c}^{}_{j,\sigma} + \sum_{R,R'=1}^{N_{Imp}} t_{R,R'} \hat{d}^{\dagger}_{R,\sigma}\hat{d}^{}_{R',\sigma}  + \sum_{R,\sigma} V_R \hat{c}^{\dagger}_{R,\sigma} \hat{d}^{}_{R,\sigma}  + \text{H.c.}  + \frac{U}{2} \sum_{R}\left( \hat{n}^{d}_R - 1 \right)^2 + \frac{B}{2}\sum_{R,\sigma} \sigma \hat{d}^{\dagger}_{R,\sigma} \hat{d}^{}_{R,\sigma}$$
 
 **Kondo**
 
-$H = \sum_{i,j} \hat{c}^{\dagger}_{i,\sigma} T^{\sigma}_{i,j} \hat{c}^{\phantom\dagger}_{j,\sigma} + \sum_{R,R'=1}^{N_{Imp}} J_{R,R'} \vec{\hat{S}}_{R} \cdot \vec{\hat{S}}_{R'}  +  
-\sum_{R,R'=1}^{N_{Imp}}  J^{z}_{R,R'} \hat{S}^{z}_{R}  \hat{S}^{z}_{R'}  + \sum_{R} J^{K}_{R} \vec{\hat{S}}_{R}  \cdot   \vec{\hat{c}}^{\dagger}_{R} \frac{\vec{\sigma}}{2} \vec{\hat{c}}^{\phantom\dagger}_{R} + B \sum_{R}\hat{S}^{z}_R$ 
+$$H = \sum_{i,j} \hat{c}^{\dagger}_{i,\sigma} T^{\sigma}_{i,j} \hat{c}^{}_{j,\sigma} + \sum_{R,R'=1}^{N_{Imp}} J_{R,R'} \vec{\hat{S}}_{R} \cdot \vec{\hat{S}}_{R'}  +  
+\sum_{R,R'=1}^{N_{Imp}}  J^{z}_{R,R'} \hat{S}^{z}_{R}  \hat{S}^{z}_{R'}  + \sum_{R} J^{K}_{R} \vec{\hat{S}}_{R}  \cdot   \vec{\hat{c}}^{\dagger}_{R} \frac{\vec{\sigma}}{2} \vec{\hat{c}}^{}_{R} + B \sum_{R}\hat{S}^{z}_R$$ 
 
 In the above the hopping is on a square lattice  with the possibility of an altermagnetic term  as  discussed in [this](https://arxiv.org/abs/2601.07138) paper.  
 
