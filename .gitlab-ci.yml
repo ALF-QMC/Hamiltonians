@@ -1,6 +1,5 @@
 pages:
-  image: debian:stable-slim
-  needs: []
+  image: alpine
   script:
     - mkdir public
     - echo '<meta http-equiv="refresh" content="0; URL=https://alf.physik.uni-wuerzburg.de/Hamiltonians/" />' > public/index.html
@@ -8,5 +7,5 @@ pages:
     paths:
       - public
   rules:
-    - if: '$CI_COMMIT_BRANCH == "master"'
+    - if: '$CI_COMMIT_BRANCH == "main"'
 
