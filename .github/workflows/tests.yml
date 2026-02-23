@@ -4,6 +4,10 @@ on:
   push:
     branches: ['**']
 
+concurrency:
+  group: 'test-${{ github.ref }}'
+  cancel-in-progress: true
+
 jobs:
   test:
     name: Test · ${{ matrix.image[1] }} · ${{ matrix.mode }}
