@@ -9,9 +9,11 @@ permissions:
   contents: read
   pages: write
   id-token: write
+
 concurrency:
   group: 'pages-${{ github.ref }}'
-  cancel-in-progress: false
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -33,7 +35,7 @@ jobs:
 
   deploy_pages:
     name: Deploy GitHub Pages (main only)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     needs: [build]
     if: github.ref == 'refs/heads/main'
     environment:
