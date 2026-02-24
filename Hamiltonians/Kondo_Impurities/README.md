@@ -1,3 +1,10 @@
+---
+authors:
+  - name:  Fakher Assaad
+    email: assaad@physik.uni-wuerzburg.de
+    orcid: 0000-0002-3302-9243
+---
+
 # SU(2) Kondo and Anderson impurities.  
 
 **The code can solve the following models**  
