@@ -2,20 +2,23 @@
 
 This Hamiltonian extends  the standard implementation of the Hubbard model  with energetically imposed constraints that for calculations in the canonical ensemble  and  fixed z-component of total spin. 
 
-$$\hat{H} = \hat{H}_{\text{Hub}}  +  \lambda_C \left( \hat{N}  -   N_{Particle}\right)^2 + 
+$$\hat{H} = \hat{H}_{\text{Hub}}  +  \lambda_C \left( \hat{N}  -   N_{\text{Particle}}\right)^2 + 
     \lambda_S \left( \hat{S}^{z} - S^{z}\right)^2$$
 
 In the above, 
+
 $$\hat{N} =  \sum_{i,n,\delta} \hat{c}^{\dagger}_{i,n,\delta} 
 \hat{c}^{}_{i,n,\delta}$$ 
+
 and 
+
 $$\hat{S}^z =  \frac{1}{2}\sum_{i,n,n',\delta} \hat{c}^{\dagger}_{i,n,\delta} 
 \sigma^{z}_{n,n'}\hat{c}^{}_{i,n',\delta}$$ 
 
-The  default values  of  $N_{Particle}$ and  $S^z$  are  
-$S^z = 0 $ and $N_{Particle} = N * N_{Orb} $  corresponding to  half-filling.  Here $N$ corresponds  to the number of unit cells and $N_{Orb}$  the number of orbitals per  unit cell.
+The  default values  of  $N_{\text{Particle}}$ and  $S^z$  are $S^z = 0$ and $N_{\text{Particle}} = N \cdot N_{\text{Orb}}$,
+corresponding to half-filling.  Here $N$ corresponds  to the number of unit cells and $N_{\text{Orb}}$  the number of orbitals per  unit cell.
 
-In the present  implementation,  the projection onto the  $S^z =0 $ subspace generates a  mild  sign problem.   For the $4$-site chain at $U/t=4$ and  $\beta t = 2$  the  QMC energy in the $S^z=0$ and $N=4$ sector gives $ -1.8137  \pm  0.0035 $ and the ED  result is $-1.8100613$  so that the present version of the code seems to work. 
+In the present  implementation,  the projection onto the  $S^z =0$ subspace generates a  mild  sign problem.   For the $4$-site chain at $U/t=4$ and  $\beta t = 2$  the  QMC energy in the $S^z=0$ and $N=4$ sector gives $-1.8137  \pm  0.0035$ and the ED  result is $-1.8100613$  so that the present version of the code seems to work. 
 
 
 Here are  the required   entries for the  parameter file.
