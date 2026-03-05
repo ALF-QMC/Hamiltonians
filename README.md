@@ -12,10 +12,12 @@ The  shell script will clone the ALF version that is required for the Hamiltonia
 
 1. Clone this git project
 2. Go to the directory corresponding to the desired model 
-3. Execute the shell script  `clone_alf.sh`
+3. Execute the shell script `clone_alf.sh`[^2]
 4. In the ALF  directory carry out the compilation as for a normal ALF implementation
 5. The executable `$PWD/ALF/Prog/ALF.out` is enabled with the new Hamiltonian
 6. The `Start` directory contains the initial files required to carry out a sample run
+
+[^2]: Note that this creates a shallow clone of the `ALF` repository, meaning its full git history will not be fetched. If you want to access the whole history, run `git fetch --unshallow` inside the `ALF/` directory.
 
 ## Directory structure
 
@@ -31,4 +33,3 @@ Hamiltonians/
 |   └── Hamiltonian_def_smod.F90
 ...
 ```
-
