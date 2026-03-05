@@ -6,13 +6,6 @@ The ALF library comes with a number of supported model classes [^1] — this rep
 
 [^1]: Currently ALF includes (i) SU(N) Hubbard models, (ii) O(2N) t-V models, (iii) Kondo models, (iv) long-range Coulomb models, and (v) generic Z2 lattice gauge theories coupled to Z2 matter and fermions. See its [documentation](https://alf.physik.uni-wuerzburg.de/page/documentation/) for descriptions of those models.
 
-
-## List of Hamiltonians
-
-```{tableofcontents}
-```
-
-
 ## Running Hamiltonians
 
 The  shell script will clone the ALF version that is required for the Hamiltonian and  will carry out the required changes, to the ALF code to account for the new Hamiltonian.
