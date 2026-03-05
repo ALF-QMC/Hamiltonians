@@ -1,6 +1,6 @@
 # Repository of ALF Hamiltonians
 
-Repository for Hamiltonians that are not part of the [ALF repository](https://git.physik.uni-wuerzburg.de/ALF/ALF).
+Repository for Hamiltonians that are not part of the [ALF repository](https://github.com/ALF-QMC/ALF).
 
 The ALF library comes with a number of supported model classes [1] — this repository contains additional Hamiltonians, which may, if indicated, require an especific version of ALF.
 
