@@ -148,7 +148,7 @@
       end type ham_Hubbard_Can
 
       !#PARAMETERS START# VAR_lattice
-      Character (len=64) :: Model = 'Hubbard Canoncial'  ! Value not relevant
+      Character (len=64) :: Model = 'Hubbard Canonical'  ! Value not relevant
       Character (len=64) :: Lattice_type = 'Square'
       Integer            :: L1 = 6   ! Length in direction a_1
       Integer            :: L2 = 6   ! Length in direction a_2
