@@ -4,7 +4,7 @@ Repository for Hamiltonians that are not part of the [ALF repository](https://gi
 
 The ALF library comes with a number of supported model classes [1] — this repository contains additional Hamiltonians, which may, if indicated, require an especific version of ALF.
 
-[1] Currently ALF includes (i) SU(N) Hubbard models, (ii) O(2N) t-V models, (iii) Kondo models, (iv) long-range Coulomb models, and (v) generic Z2 lattice gauge theories coupled to Z2 matter and fermions. See its [documentation](https://gitpages.physik.uni-wuerzburg.de/ALF/ALF_Webpage/page/documentation/) for descriptions of those models.
+[1] Currently ALF includes (i) SU(N) Hubbard models, (ii) O(2N) t-V models, (iii) Kondo models, (iv) long-range Coulomb models, and (v) generic Z2 lattice gauge theories coupled to Z2 matter and fermions. See its [documentation](https://alf.physik.uni-wuerzburg.de/page/documentation/) for descriptions of those models.
 
 
 ## List of Hamiltonians
