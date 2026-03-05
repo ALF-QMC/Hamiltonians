@@ -922,7 +922,7 @@
 !> @brief
 !> Single spin flip S0 ratio
 !> @details
-!> S0=exp(-S0(new))/exp(-S0(old)) where the new configuration correpsonds to the old one up to
+!> S0=exp(-S0(new))/exp(-S0(old)) where the new configuration corresponds to the old one up to
 !> a spin flip of Operator n on time slice nt
 !> @details
 !--------------------------------------------------------------------
