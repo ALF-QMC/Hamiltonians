@@ -170,14 +170,15 @@
       !#PARAMETERS END#
 
       !#PARAMETERS START# VAR_Hubbard_Can
-      real(Kind=Kind(0.d0)) :: ham_T      = 1.d0     ! Hopping parameter
-      real(Kind=Kind(0.d0)) :: Ham_chem   = 0.d0     ! Chemical potential
-      real(Kind=Kind(0.d0)) :: Ham_U      = 4.d0     ! Hubbard interaction
-      real(Kind=Kind(0.d0)) :: Ham_Can    = 0.d0     ! For projection onto canonical ensemble.
-      real(Kind=Kind(0.d0)) :: ham_T2     = 1.d0     ! For bilayer systems
-      real(Kind=Kind(0.d0)) :: Ham_U2     = 4.d0     ! For bilayer systems
-      real(Kind=Kind(0.d0)) :: ham_Tperp  = 1.d0     ! For bilayer systems
-      real(Kind=Kind(0.d0)) :: ham_h0     = 0.d0     ! Pinning field strength. Local magnetic field on site i=0, orbital=1
+      real(Kind=Kind(0.d0)) :: ham_T        = 1.d0     ! Hopping parameter
+      real(Kind=Kind(0.d0)) :: Ham_chem     = 0.d0     ! Chemical potential
+      real(Kind=Kind(0.d0)) :: Ham_U        = 4.d0     ! Hubbard interaction
+      real(Kind=Kind(0.d0)) :: Ham_Lambda_c = 0.d0     ! Charge constraint 
+      real(Kind=Kind(0.d0)) :: Ham_Lambda_s = 0.d0     ! Spin   constraint 
+      real(Kind=Kind(0.d0)) :: ham_T2       = 1.d0     ! For bilayer systems
+      real(Kind=Kind(0.d0)) :: Ham_U2       = 4.d0     ! For bilayer systems
+      real(Kind=Kind(0.d0)) :: ham_Tperp    = 1.d0     ! For bilayer systems
+      real(Kind=Kind(0.d0)) :: ham_h0       = 0.d0     ! Pinning field strength. Local magnetic field on site i=0, orbital=1
       logical               :: Mz         = .true.   ! When true, sets the M_z-Hubbard model: Nf=2, demands that N_sun is even, HS field couples to the z-component of magnetization; otherwise, HS field couples to the density
       logical               :: Continuous = .false.  ! Uses (T: continuous; F: discrete) HS transformation
       !#PARAMETERS END#
@@ -260,6 +261,10 @@
             Write(error_unit,*) 'Ham_Set: Set N_fl=2 if you want to use the pinning field'
             CALL Terminate_on_error(ERROR_HAMILTONIAN,__FILE__,__LINE__)
           endif
+          If (abs(ham_lambda_s) >= 1.D-10 .and. N_FL /= 2 ) then
+            Write(error_unit,*) 'Ham_Set: Set N_fl=2 if you want to use spin constraint'
+            CALL Terminate_on_error(ERROR_HAMILTONIAN,__FILE__,__LINE__)
+          endif
 
           If (N_FL == 2 )  then 
             N_SUN = N_SUN/2
@@ -317,7 +322,8 @@
              Write(unit_info,*) 'N_FL          : ', N_FL
              Write(unit_info,*) 't             : ', Ham_T
              Write(unit_info,*) 'Ham_U         : ', Ham_U
-             Write(unit_info,*) 'Ham_Can       : ', Ham_Can
+             Write(unit_info,*) 'Ham_Lambda_c  : ', Ham_Lambda_c  
+             Write(unit_info,*) 'Ham_Lambda_s  : ', Ham_Lambda_s  
              if (abs(ham_h0) >= 1.D-10 ) Write(unit_info,*) 'Pinning field : ', ham_h0
              if (Index(str_to_upper(Lattice_type),'BILAYER') > 0 )  then
                Write(unit_info,*) 't2            : ', Ham_T2
@@ -499,7 +505,10 @@
              Ham_U_vec(:)  = Ham_U
              If (abs(Ham_U ) > Zero ) N_ops = N_ops + Latt%N*Latt_unit%Norb
           endif
-          If (Abs(Ham_Can) > Zero ) then
+          If (Abs(Ham_Lambda_c) > Zero ) then
+             N_ops = N_ops + 1
+          End If
+          If (Abs(Ham_Lambda_s) > Zero ) then
              N_ops = N_ops + 1
           End If
           If ( Mz )  Then
@@ -540,7 +549,7 @@
                 Enddo
              Enddo
           Endif
-          If (Abs(Ham_Can) > Zero ) then
+          If (Abs(Ham_Lambda_c) > Zero ) then
             nc = nc + 1
             Do nf = 1,N_FL
                Call OP_Make( Op_V(nc,nf),Latt%N*Latt_unit%Norb)
@@ -549,8 +558,8 @@
                   Op_V(nc,nf)%P(I)   = I
                enddo
 
-               Op_V(nc,nf)%alpha  = cmplx(-dble(Latt%N*Latt_unit%Norb)/2.d0,0.d0, kind(0.D0))
-               Op_V(nc,nf)%g      = SQRT(CMPLX(-DTAU*Ham_Can/(DBLE(N_SUN)), 0.D0, kind(0.D0))) 
+               Op_V(nc,nf)%alpha  = cmplx(-dble(Latt%N*Latt_unit%Norb)/dble(N_FL*N_SUN),0.d0, kind(0.D0))
+               Op_V(nc,nf)%g      = SQRT(CMPLX(-DTAU*Ham_Lambda_c/(DBLE(N_SUN)), 0.D0, kind(0.D0))) 
                If (Continuous) then
                   Op_V(nc,nf)%type   = 3
                else
@@ -559,6 +568,28 @@
                Call Op_set( Op_V(nc,nf) )
             enddo
           End If
+          If (Abs(Ham_Lambda_s) > Zero ) then
+            nc = nc + 1
+            Do nf = 1,N_FL
+               X = 1.d0 
+               if (nf == 2) X = -1.d0
+               Call OP_Make( Op_V(nc,nf),Latt%N*Latt_unit%Norb)
+               Do I = 1, Latt%N*Latt_unit%Norb
+                  Op_V(nc,nf)%O(I,I) = X
+                  Op_V(nc,nf)%P(I)   = I
+               enddo
+
+               Op_V(nc,nf)%alpha  = cmplx(0.d0,0.d0,kind(0.d0)) 
+               Op_V(nc,nf)%g      = SQRT(CMPLX(-DTAU*Ham_Lambda_s/(DBLE(N_SUN)), 0.D0, kind(0.D0))) 
+               If (Continuous) then
+                  Op_V(nc,nf)%type   = 3
+               else
+                  Op_V(nc,nf)%type   = 2
+               endif
+               Call Op_set( Op_V(nc,nf) )
+            enddo
+          End If
+
 
 
           Deallocate (Ham_U_vec)
