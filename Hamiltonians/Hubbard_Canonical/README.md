@@ -3,7 +3,7 @@
 This Hamiltonian extends  the standard implementation of the Hubbard model  with energetically imposed constraints that for calculations in the canonical ensemble  and  fixed z-component of total spin. 
 
 $$\hat{H} = \hat{H}_{\text{Hub}}  +  \lambda_C \left( \hat{N}  -   N_{Particle}\right)^2 + 
-    \lambda_S \left( \hat{S}^{z} - S^{z}\right)$$
+    \lambda_S \left( \hat{S}^{z} - S^{z}\right)^2$$
 
 In the above, 
 $$\hat{N} =  \sum_{i,n,\delta} \hat{c}^{\dagger}_{i,n,\delta} 
