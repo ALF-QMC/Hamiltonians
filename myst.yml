@@ -7,7 +7,7 @@ project:
   bibliography:
     - bibfile.bib
   toc:
-    - file: front.md
+    - file: README.md
     - pattern: Hamiltonians/*/README*
 site:
   options:
