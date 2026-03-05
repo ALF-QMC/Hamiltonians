@@ -314,7 +314,7 @@
                 Write(unit_info,*) 'Theta         : ', Theta
                 Write(unit_info,*) 'Tau_max       : ', beta
              else
-                Write(unit_info,*) 'Finite temperture version'
+                Write(unit_info,*) 'Finite temperature version'
                 Write(unit_info,*) 'Beta          : ', Beta
              endif
              Write(unit_info,*) 'dtau,Ltrot_eff: ', dtau,Ltrot
