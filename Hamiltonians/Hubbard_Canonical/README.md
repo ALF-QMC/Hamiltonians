@@ -15,7 +15,7 @@ $$\hat{S}^z =  \frac{1}{2}\sum_{i,n,n',\delta} \hat{c}^{\dagger}_{i,n,\delta}
 The  default values  of  $N_{Particle}$ and  $S^z$  are  
 $S^z = 0 $ and $N_{Particle} = N * N_{Orb} $  corresponding to  half-filling.  Here $N$ corresponds  to the number of unit cells and $N_{Orb}$  the number of orbitals per  unit cell.
 
-In the present  implementation,  the projection onto the  $S^z =0 $ subspace generates a  mild  sign problem.   For the $4$-site chain at $U/t=4$ and  $\beta t = 2$  the  QMC energy in the $S^z=0$ and $N=4$ sector gives $ -1.8137  \pm  0.0035 $ and the ED  result is $-1.8100613$ thereby providing a good test for the code.  
+In the present  implementation,  the projection onto the  $S^z =0$ subspace generates a  mild  sign problem.   For the $4$-site chain at $U/t=4$ and  $\beta t = 2$  the  QMC energy in the $S^z=0$ and $N=4$ sector gives $ -1.8137  \pm  0.0035 $ and the ED  result is $-1.8100613$ thereby providing a good test for the code.  
 
 
 Here are  the required   entries for the  parameter file.
