@@ -1,0 +1,65 @@
+!===============================================================================
+!  Variables for the Kit_Heis program
+!-------------------------------------------------------------------------------
+&VAR_ham_name
+ham_name = "Kit_Heis"
+/
+
+&VAR_lattice 
+L1    = 4
+L2    = 4 
+Lattice_type = "Honeycomb-Kit"   ! Square, Honeycomb,  Pi_Flux
+Model        = "Kit_Heis"      ! Hubbard_SU2, Hubbard_Mz, Hubbard_SU2_Ising, t_V,  Kit_Heis
+/
+
+&VAR_Kit_Heis
+Ham_J=-0.1 !-0.1d0
+Ham_J3=0.1!0.1d0
+Ham_alphax=-1 !-1
+Ham_alphay=-1 !-1
+Ham_alphaz=-1 !-1
+Ham_Gx=0.5 !0.5
+Ham_Gy=0.5 !0.5
+Ham_Gz=0.5 !0.5
+Hab=0.0579d0
+Htheta=0.45
+Ham_U=12.5d0
+Dtau = 0.04d0
+Beta = 0.8d0
+/
+
+
+&VAR_QMC
+Nwrap   = 10
+NSweep  = 10
+NBin    = 3
+Ltau    = 1
+LOBS_ST = 1
+LOBS_EN = 100
+/
+CPU_MAX = 1.0
+
+/
+
+&VAR_errors 
+n_skip  = 0
+N_rebin = 1
+N_Cov   = 0
+/
+
+&VAR_Max_Stoch
+NGamma   = 400
+Om_st    = 0.0
+Om_en    = 15.0
+Ndis     = 5000
+NBins    = 400
+NSweeps  = 100
+NWarm    = 20
+N_alpha  = 14
+alpha_st = 1.d0
+R        = 1.2
+Channel  = "PH"
+Checkpoint = .false.
+Tolerance  = 0.1
+/
+! slash terminates namelist statement - DO NOT REMOVE
