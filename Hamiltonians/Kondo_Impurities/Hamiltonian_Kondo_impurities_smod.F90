@@ -315,6 +315,7 @@
           
          
           Ltrot = nint(beta/dtau)
+          Thtrot = 0
           if (Projector) Thtrot = nint(theta/dtau)
           Ltrot = Ltrot+2*Thtrot
             
