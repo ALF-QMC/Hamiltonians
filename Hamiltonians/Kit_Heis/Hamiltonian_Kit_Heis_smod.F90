@@ -149,8 +149,8 @@
       !#PARAMETERS START# VAR_lattice
       Integer            :: L1 = 4   ! Length in direction a_1
       Integer            :: L2 = 4   ! Length in direction a_2
-      Character (len=64) :: Lattice_type = 'Honeycomb-Kit'
-      Character (len=64) :: Model = 'Kit_Heis'
+      Character (len=64) :: Lattice_type = 'Honeycomb-Kit'  ! Lattice type. Only 'Honeycomb-Kit' implemented for Kit_Heis model
+      Character (len=64) :: Model = 'Kit_Heis'  ! Model name. Must be 'Kit_Heis' for this Hamiltonian module
       !#PARAMETERS END#
 
       !#PARAMETERS START# VAR_Kit_Heis
@@ -171,7 +171,7 @@
       real (Kind=Kind(0.d0)) :: Dtau       = 0.1d0    ! Imaginary time step. Ltrot=Beta/dtau
       real (Kind=Kind(0.d0)) :: Beta       = 5.d0     ! Inverse temperature
       real (Kind=Kind(0.d0)) :: Theta      = 0.d0     ! Projection parameter
-      ! logical :: Projector               = .false.  ! Whether the projective algorithm is used
+      ! logical :: Projector               = .false.  ! Whether the projective algorithm is used. Not implemented for Kit_Heis model.
       !#PARAMETERS END#
 
       real (Kind=Kind(0.d0)) :: Hx, Hy, Hz

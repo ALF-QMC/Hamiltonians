@@ -5,61 +5,86 @@
 ham_name = "Kit_Heis"
 /
 
-&VAR_lattice 
-L1    = 4
-L2    = 4 
-Lattice_type = "Honeycomb-Kit"   ! Square, Honeycomb,  Pi_Flux
-Model        = "Kit_Heis"      ! Hubbard_SU2, Hubbard_Mz, Hubbard_SU2_Ising, t_V,  Kit_Heis
+&VAR_lattice
+L1 = 4  ! Length in direction a_1
+L2 = 4  ! Length in direction a_2
+Lattice_type = "Honeycomb-Kit"  ! Lattice type. Only 'Honeycomb-Kit' implemented for Kit_Heis model
+Model = "Kit_Heis"  ! Model name. Must be 'Kit_Heis' for this Hamiltonian module
 /
 
 &VAR_Kit_Heis
-Ham_J=-0.1 !-0.1d0
-Ham_J3=0.1!0.1d0
-Ham_alphax=-1 !-1
-Ham_alphay=-1 !-1
-Ham_alphaz=-1 !-1
-Ham_Gx=0.5 !0.5
-Ham_Gy=0.5 !0.5
-Ham_Gz=0.5 !0.5
-Hab=0.0579d0
-Htheta=0.45
-Ham_U=12.5d0
-Dtau = 0.04d0
-Beta = 0.8d0
+Ham_J = -0.1d0  ! Nearest neighbor Heisenberg coupling
+Ham_J3 = 0.1d0  ! Third nearest neighbor Heisenberg coupling
+Ham_alphax = -1.0d0  ! Kitaev coupling on x-bonds
+Ham_alphay = -1.0d0  ! Kitaev coupling on y-bonds
+Ham_alphaz = -1.0d0  ! Kitaev coupling on z-bonds
+Ham_Gx = 0.5d0  ! Gamma coupling on x-bonds
+Ham_Gy = 0.5d0  ! Gamma coupling on y-bonds
+Ham_Gz = 0.5d0  ! Gamma coupling on z-bonds
+Ham_Gx_p = 0.0d0  ! Gamma prime coupling on x-bonds
+Ham_Gy_p = 0.0d0  ! Gamma prime coupling on y-bonds
+Ham_Gz_p = 0.0d0  ! Gamma prime coupling on z-bonds
+Hab = 0.0579d0  ! mu_B * B / K ; Magnetic field strength
+Htheta = 0.45d0  ! Magnetic field angle (in units of pi)
+Ham_U = 7.14d0  ! Hubbard U, for freezing out charge fluctuations
+Dtau = 0.1d0  ! Imaginary time step. Ltrot=Beta/dtau
+Beta = 0.5d0  ! Inverse temperature
 /
-
 
 &VAR_QMC
-Nwrap   = 10
-NSweep  = 10
-NBin    = 3
-Ltau    = 1
-LOBS_ST = 1
-LOBS_EN = 100
+CPU_MAX = 0.0d0  ! Code stops after CPU_MAX hours, if 0 or not specified, the code stops after Nbin bins
+Delta_t_Langevin_HMC = 0.1d0  ! Time step for Langevin or HMC
+Global_moves = .F.  ! Allows for global moves in space and time.
+Global_tau_moves = .F.  ! Allows for global moves on a single time slice.
+HMC = .F.  ! HMC update
+LOBS_EN = 0  ! End measurements at time slice LOBS_EN
+LOBS_ST = 0  ! Start measurements at time slice LOBS_ST
+sequential = .T.  ! Conventional updating scheme
+Langevin = .F.  ! Langevin update
+Leapfrog_steps = 0  ! Number of leapfrog iterations
+N_HMC_sweeps = 1  ! Number of HMC sweeps
+Amplitude = 1.0d0  ! Width of the box distribution for update of type t=3,4 fields.  Defaults  to 1.0.
+Ltau = 1  ! 1 to calculate time-displaced Green functions; 0 otherwise.
+Max_Force = 5.0d0  ! Max Force for Langevin
+N_global = 1  ! Number of global moves per sweep.
+N_global_tau = 1  ! Number of global moves that will be carried out on a single time slice.
+Nbin = 5  ! Number of bins.
+Nsweep = 20  ! Number of sweeps per bin.
+Nt_sequential_end = -1  ! 
+Nt_sequential_start = 0  ! 
+Nwrap = 10  ! Stabilization. Green functions will be computed from scratch after each time interval Nwrap*Dtau.
+Propose_S0 = .F.  ! Proposes single spin flip moves with probability exp(-S0).
 /
-CPU_MAX = 1.0
 
+&VAR_errors
+N_Back = 1  ! If set to 1, substract background in correlation functions. Is ignored in Python analysis.
+N_Cov = 0  ! If set to 1, covariance computed for time-displaced correlation functions. Is ignored in Python analysis.
+N_auto = 0  ! If > 0, calculate autocorrelation. Is ignored in Python analysis.
+N_rebin = 1  ! Rebinning: Number of bins to combine into one.
+N_skip = 1  ! Number of bins to be skipped.
+N_BZ_Zones = 1  ! Number of Brillouin zones that will be covered if extended zone scheme is activated.
+Extended_Zone = .F.  ! If true carries out the fourier transform in the extened zone scheme.
 /
 
-&VAR_errors 
-n_skip  = 0
-N_rebin = 1
-N_Cov   = 0
+&VAR_TEMP
+N_Tempering_frequency = 10  ! The frequency, in units of sweeps, at which the exchange moves are carried out.
+N_exchange_steps = 6  ! Number of exchange moves.
+Tempering_calc_det = .T.  ! Specifies whether the fermion weight has to be taken into account while tempering. Can be set to .F. if the parameters that get varied only enter the Ising action S_0
+mpi_per_parameter_set = 2  ! Number of mpi-processes per parameter set.
 /
 
 &VAR_Max_Stoch
-NGamma   = 400
-Om_st    = 0.0
-Om_en    = 15.0
-Ndis     = 5000
-NBins    = 400
-NSweeps  = 100
-NWarm    = 20
-N_alpha  = 14
-alpha_st = 1.d0
-R        = 1.2
-Channel  = "PH"
-Checkpoint = .false.
-Tolerance  = 0.1
+Checkpoint = .F.  ! 
+NBins = 250  ! Number of bins for Monte Carlo.
+NSweeps = 70  ! Number of sweeps per bin.
+N_alpha = 14  ! Number of temperatures.
+Ndis = 2000  ! Number of boxes for histogram.
+Ngamma = 400  ! Number of Dirac delta-functions for parametrization.
+Nwarm = 20  ! The Nwarm first bins will be omitted.
+Om_en = 10.0d0  ! Frequency range upper bound.
+Om_st = -10.0d0  ! Frequency range lower bound.
+R = 1.2d0  ! 
+Tolerance = 0.1d0  ! 
+alpha_st = 1.0d0  ! 
 /
 ! slash terminates namelist statement - DO NOT REMOVE
