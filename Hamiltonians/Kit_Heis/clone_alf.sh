@@ -10,6 +10,10 @@ echo "Finished cloning ALF and setting up the Hamiltonian \"$HAMILTONIAN_NAME\".
 echo "Creating symbolic links and modifying the Makefile for the analysis that calculates the magetotropic susceptibility."
 echo "The workflow that adapts the Makefile is fragile and may break if the Makefile is changed in future versions of ALF."
 ln -s "$PWD/calc_k2_tau.F90" "ALF/Analysis/calc_k2_tau.F90" || exit 1
-sed -i "s|BINS=|BINS= calc_k2_tau.out |" ALF/Analysis/Makefile || exit 1
+if [ "$(uname)" = "Darwin" ]; then
+    sed -i '' "s|BINS=|BINS= calc_k2_tau.out |" ALF/Analysis/Makefile || exit 1
+else
+    sed -i "s|BINS=|BINS= calc_k2_tau.out |" ALF/Analysis/Makefile || exit 1
+fi
 echo "calc_k2_tau.o: ana_mod.o" >> ALF/Analysis/Makefile || exit 1
 echo "Done."
