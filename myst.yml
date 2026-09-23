@@ -11,7 +11,7 @@ project:
     - pattern: Hamiltonians/*/README*
 site:
   options:
-    logo: images/alf_logo_flo.png
+    logo: images/alf_logo_hamiltonians.png
     favicon: images/alf_logo2-old.png
     folders: true
   template: book-theme
