@@ -4,6 +4,7 @@ project:
   authors:
     - name: ALF Collaboration
       email: 'tp1-alf@uni-wuerzburg.de'
+      url: 'https://alf.physik.uni-wuerzburg.de/'
   bibliography:
     - bibfile.bib
   toc:
